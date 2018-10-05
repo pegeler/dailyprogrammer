@@ -1,0 +1,4 @@
+*.html
+.Rproj.user
+.Rhistory
+*_working.*
