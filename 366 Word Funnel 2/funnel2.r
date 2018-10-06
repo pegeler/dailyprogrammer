@@ -53,6 +53,71 @@ funnel2("turntables") # => 5
 funnel2("implosive")  # => 1
 funnel2("programmer") # => 2
 
+
+# Funnel2 word tree generator ---------------------------------------------
+
+addChildWords <- function(parent, words, depth) {
+  childWords <- get_funnel_words(xmlGetAttr(parent, "value"), words)
+
+  if (length(childWords))
+    lapply(
+      childWords,
+      function(word)
+        newXMLNode(
+          "word",
+          parent = parent,
+          attrs = c(depth = depth, value = word)
+        )
+    )
+
+  invisible(childWords)
+}
+
+generateWordTree <- function(target, wordlist = enable1) {
+
+  stopifnot(require(XML))
+
+  wordlist_s <- split(wordlist, nchar(wordlist))
+
+  char_len <- nchar(target)
+
+  root <- newXMLNode(
+    "wordTree",
+    newXMLNode("word", attrs = c(depth = 1, value = target))
+  )
+
+  for (i in seq_len(char_len - 2L)) {
+
+    current_depth <- getNodeSet(root, sprintf("//word[@depth='%i']", i))
+    target_char_len <- char_len - i
+
+    if (xmlSize(current_depth)) {
+
+      lapply(
+        current_depth,
+        addChildWords,
+        wordlist_s[[as.character(target_char_len)]],
+        i + 1
+      )
+
+    } else {
+
+      break
+
+    }
+
+  }
+
+  root
+
+}
+
+generateWordTree("gnash")      # => 4
+generateWordTree("princesses") # => 9
+generateWordTree("turntables") # => 5
+generateWordTree("implosive")  # => 1
+generateWordTree("programmer") # => 2
+
 # Bonus -------------------------------------------------------------------
 
 # Bonus 2 -----------------------------------------------------------------
