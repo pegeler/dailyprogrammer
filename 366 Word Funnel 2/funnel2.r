@@ -19,7 +19,7 @@ get_funnel_words <- function(x, words) {
 
 }
 
-funnel2 <- function(target, wordlist = enable1) {
+proto_funnel2 <- function(target, wordlist = enable1) {
 
   wordlist_s <- split(wordlist, nchar(wordlist))
 
@@ -47,11 +47,11 @@ funnel2 <- function(target, wordlist = enable1) {
 }
 
 
-funnel2("gnash")      # => 4
-funnel2("princesses") # => 9
-funnel2("turntables") # => 5
-funnel2("implosive")  # => 1
-funnel2("programmer") # => 2
+proto_funnel2("gnash")      # => 4
+proto_funnel2("princesses") # => 9
+proto_funnel2("turntables") # => 5
+proto_funnel2("implosive")  # => 1
+proto_funnel2("programmer") # => 2
 
 
 # Funnel2 word tree generator ---------------------------------------------
@@ -118,7 +118,53 @@ generateWordTree("turntables") # => 5
 generateWordTree("implosive")  # => 1
 generateWordTree("programmer") # => 2
 
+##
+
+getWordPath <- function(leaf, depth) {
+
+  sapply(xmlAncestors(leaf)[-1], xmlGetAttr, "value")
+
+}
+
+funnel2 <- function(target, wordlist = enable1) {
+
+  result <- generateWordTree(target, wordlist)
+
+  max_depth <- max(xpathSApply(result, "//word", xmlGetAttr, "depth", converter = as.integer))
+
+  leaves <- getNodeSet(result, sprintf("//word[@depth='%i']", max_depth))
+
+  paths <- lapply(leaves, getWordPath, max_depth)
+
+  structure(
+    list(target = target, tree = result, max_depth = max_depth, paths = paths),
+    class = "wordFunnel"
+  )
+
+}
+
+print.wordFunnel <- function(x, ...) {
+    cat(
+      "Target word is:      ", x$target, "\n",
+      "Maximum path length: ", x$max_depth, "\n\n",
+      "Here is a random path of maximum depth:\n", sep = "")
+
+    path <- x$paths[[sample(seq_len(x$max_depth), 1L)]]
+
+    cat(paste(path, collapse = " => "))
+}
+
+funnel2("gnash")      # => 4
+funnel2("princesses") # => 9
+funnel2("turntables") # => 5
+funnel2("implosive")  # => 1
+funnel2("programmer") # => 2
+
 # Bonus -------------------------------------------------------------------
+depths <- sapply(enable1[nchar(enable1) > 10L], proto_funnel2)
+
+depths[depths ==  10L]
+
 
 # Bonus 2 -----------------------------------------------------------------
 
