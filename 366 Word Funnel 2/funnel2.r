@@ -147,9 +147,9 @@ print.wordFunnel <- function(x, ...) {
     cat(
       "Target word is:      ", x$target, "\n",
       "Maximum path length: ", x$max_depth, "\n\n",
-      "Here is a random path of maximum depth:\n", sep = "")
+      "Here is a random path of maximum depth:\n  ", sep = "")
 
-    path <- x$paths[[sample(seq_len(x$max_depth), 1L)]]
+    path <- x$paths[[sample(seq_along(x$paths), 1L)]]
 
     cat(paste(path, collapse = " => "))
 }
@@ -165,6 +165,10 @@ depths <- sapply(enable1[nchar(enable1) > 10L], proto_funnel2)
 
 depths[depths ==  10L]
 
+# complecting
+#          10
+
+funnel2("complecting")
 
 # Bonus 2 -----------------------------------------------------------------
 
