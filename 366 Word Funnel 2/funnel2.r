@@ -171,6 +171,23 @@ depths[depths ==  10L]
 funnel2("complecting")
 
 # Bonus 2 -----------------------------------------------------------------
+bonus2_get_funnel_words <- function(x, words) {
+
+  pairs <- do.call(expand.grid, lapply(seq_len(2L), function(z) seq(0, nchar(x))))
+  pairs <- as.matrix(pairs[with(pairs, Var1 < Var2),])
+
+  candidates <- apply(
+    pairs,
+    1,
+    paste(x[-i], collapse = ""),
+    strsplit(x, character(0L))[[1]]
+    )
+
+  words[words %in% candidates]
+
+}
+
+get_funnel_words("gnash", enable1)
 
 # Checks ------------------------------------------------------------------
 
