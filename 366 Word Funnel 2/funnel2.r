@@ -120,7 +120,7 @@ generateWordTree("programmer") # => 2
 
 ##
 
-getWordPath <- function(leaf, depth) {
+getWordPath <- function(leaf) {
 
   sapply(xmlAncestors(leaf)[-1], xmlGetAttr, "value")
 
@@ -134,7 +134,7 @@ funnel2 <- function(target, wordlist = enable1) {
 
   leaves <- getNodeSet(result, sprintf("//word[@depth='%i']", max_depth))
 
-  paths <- lapply(leaves, getWordPath, max_depth)
+  paths <- lapply(leaves, getWordPath)
 
   structure(
     list(target = target, tree = result, max_depth = max_depth, paths = paths),
@@ -161,6 +161,7 @@ funnel2("implosive")  # => 1
 funnel2("programmer") # => 2
 
 # Bonus -------------------------------------------------------------------
+# This is slow. Around 30 mins. Will look for a faster way.
 depths <- sapply(enable1[nchar(enable1) > 10L], proto_funnel2)
 
 depths[depths ==  10L]
