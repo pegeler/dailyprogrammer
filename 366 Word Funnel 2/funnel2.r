@@ -1,17 +1,23 @@
 # Challenge 366: Word Funnel 2
 # https://www.reddit.com/r/dailyprogrammer/comments/99d24u/20180822_challenge_366_intermediate_word_funnel_2/?st=jmtz9cz9&sh=670ed704
 
+library(XML)
+
 enable1_url <- 'https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt'
 
 enable1 <- readLines(enable1_url)
 
 # Funnel2 -----------------------------------------------------------------
+remove_letters <- function(i, x) {
+  paste(x[-i], collapse = "")
+}
+
 get_funnel_words <- function(x, words) {
 
   candidates <-
     sapply(
       seq_len(nchar(x)),
-      function(i, x) paste(x[-i], collapse = ""),
+      remove_letters,
       strsplit(x, character(0L))[[1]]
     )
 
@@ -75,10 +81,6 @@ addChildWords <- function(parent, words, depth) {
 
 generateWordTree <- function(target, wordlist = enable1) {
 
-  stopifnot(require(XML))
-
-  wordlist_s <- split(wordlist, nchar(wordlist))
-
   char_len <- nchar(target)
 
   root <- newXMLNode(
@@ -89,16 +91,10 @@ generateWordTree <- function(target, wordlist = enable1) {
   for (i in seq_len(char_len - 2L)) {
 
     current_depth <- getNodeSet(root, sprintf("//word[@depth='%i']", i))
-    target_char_len <- char_len - i
 
     if (xmlSize(current_depth)) {
 
-      lapply(
-        current_depth,
-        addChildWords,
-        wordlist_s[[as.character(target_char_len)]],
-        i + 1
-      )
+      lapply(current_depth, addChildWords, wordlist, i + 1)
 
     } else {
 
@@ -172,7 +168,8 @@ depths[depths ==  10L]
 funnel2("complecting")
 
 # Bonus 2 -----------------------------------------------------------------
-bonus2_get_funnel_words <- function(x, words) {
+# Redefine `get_funnel_words` to do steps
+bonus2_get_funnel_words <- function(x, words = enable1) {
 
   pairs <- do.call(expand.grid, lapply(seq_len(2L), function(z) seq(0, nchar(x))))
   pairs <- as.matrix(pairs[with(pairs, Var1 < Var2),])
@@ -180,7 +177,7 @@ bonus2_get_funnel_words <- function(x, words) {
   candidates <- apply(
     pairs,
     1,
-    paste(x[-i], collapse = ""),
+    remove_letters,
     strsplit(x, character(0L))[[1]]
     )
 
@@ -188,7 +185,59 @@ bonus2_get_funnel_words <- function(x, words) {
 
 }
 
-get_funnel_words("gnash", enable1)
+bonus2_get_funnel_words("gnash")
+
+bonus2_funnel2 <- function(target, wordlist = enable1) {
+
+  char_len <- nchar(target)
+
+  for (i in seq_len(char_len - 2L)) {
+
+    r <- lapply(
+      unique(do.call("c", if (i == 1) list(target) else r)),
+      bonus2_get_funnel_words,
+      wordlist
+    )
+
+    if (!any(lengths(r))) {           # No results: do not increment i
+      break
+    } else if (char_len - i == 2L) {  # End of word list: increment i and break
+      i <- i + 1
+      break
+    }
+
+  }
+
+  i
+
+}
+
+
+library(foreach)
+library(doParallel)
+
+clust <- makeCluster(min(5L, detectCores() - 1L))
+registerDoParallel(clust)
+
+enable1_s <- split(enable1, nchar(enable1))
+
+lengths_to_check <- which(as.integer(names(enable1_s)) >= 13)
+
+par_time <- system.time({
+  final <- foreach(i = lengths_to_check, .combine = "c", .inorder = FALSE) %dopar% {
+    depths <- sapply(enable1_s[[i]], bonus2_funnel2)
+
+    depths[depths ==  12L]
+
+  }
+})
+
+stopCluster(clust)
+
+final
+#    preformationists contradictorinesses
+#                  12                  12
+
 
 # Checks ------------------------------------------------------------------
 
