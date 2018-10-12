@@ -3,9 +3,13 @@
 
 library(XML)
 
-enable1_url <- 'https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt'
-
-enable1 <- readLines(enable1_url)
+if (!file.exists("enable1.rda")) {
+  enable1_url <- 'https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt'
+  enable1 <- readLines(enable1_url)
+  save(enable1, file = "enable1.rda")
+} else {
+  load("enable1.rda")
+}
 
 # Funnel2 -----------------------------------------------------------------
 remove_letters <- function(i, x) {
@@ -83,10 +87,14 @@ generateWordTree <- function(target, wordlist = enable1) {
 
   char_len <- nchar(target)
 
-  root <- newXMLNode(
-    "wordTree",
-    newXMLNode("word", attrs = c(depth = 1, value = target))
-  )
+  root <-
+    newXMLDoc(
+      node =
+        newXMLNode(
+          "wordTree",
+          newXMLNode("word", attrs = c(depth = 1, value = target))
+        )
+    )
 
   for (i in seq_len(char_len - 2L)) {
 
@@ -162,8 +170,8 @@ depths <- sapply(enable1[nchar(enable1) > 10L], proto_funnel2)
 
 depths[depths ==  10L]
 
-# complecting
-#          10
+## complecting
+##          10
 
 funnel2("complecting")
 
@@ -171,45 +179,30 @@ funnel2("complecting")
 # Redefine `get_funnel_words` to do steps
 bonus2_get_funnel_words <- function(x, words = enable1) {
 
-  pairs <- do.call(expand.grid, lapply(seq_len(2L), function(z) seq(0, nchar(x))))
-  pairs <- as.matrix(pairs[with(pairs, Var1 < Var2),])
+  x_len <- nchar(x)
+  comb <-
+    do.call("c", lapply(
+      seq_len(x_len - 2L),
+      function(i, x) combn(x, i, simplify = FALSE),
+      seq_len(x_len)
+      ))
 
-  candidates <- apply(
-    pairs,
-    1,
+  candidates <- sapply(
+    comb,
     remove_letters,
     strsplit(x, character(0L))[[1]]
-    )
+  )
 
   words[words %in% candidates]
 
 }
 
 bonus2_get_funnel_words("gnash")
+## [1] "ah"   "as"   "ash"  "gas"  "gash" "na"   "nah"  "sh"
 
 bonus2_funnel2 <- function(target, wordlist = enable1) {
-
-  char_len <- nchar(target)
-
-  for (i in seq_len(char_len - 2L)) {
-
-    r <- lapply(
-      unique(do.call("c", if (i == 1) list(target) else r)),
-      bonus2_get_funnel_words,
-      wordlist
-    )
-
-    if (!any(lengths(r))) {           # No results: do not increment i
-      break
-    } else if (char_len - i == 2L) {  # End of word list: increment i and break
-      i <- i + 1
-      break
-    }
-
-  }
-
-  i
-
+  funnel_lengths <- unique(nchar(bonus2_get_funnel_words(target, wordlist)))
+  length(funnel_lengths) + 1L
 }
 
 
@@ -235,17 +228,5 @@ par_time <- system.time({
 stopCluster(clust)
 
 final
-#    preformationists contradictorinesses
-#                  12                  12
-
-
-# Checks ------------------------------------------------------------------
-
-library(testthat)
-library(dplyr)
-
-# Funnel2
-
-# Bonus
-
-# Bonus 2
+##    preformationists contradictorinesses
+##                  12                  12
