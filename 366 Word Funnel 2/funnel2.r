@@ -87,18 +87,20 @@ generateWordTree <- function(target, wordlist = enable1) {
 
   char_len <- nchar(target)
 
-  root <-
-    newXMLDoc(
-      node =
-        newXMLNode(
-          "wordTree",
-          newXMLNode("word", attrs = c(depth = 1, value = target))
-        )
-    )
+  doc <- xmlParse(
+    '<?xml version="1.0"?><wordTree xmlns="http://paul.egeler.us" />',
+    asText = TRUE
+  )
+
+  newXMLNode("word", attrs = c(depth = 1, value = target), parent = xmlRoot(doc))
 
   for (i in seq_len(char_len - 2L)) {
 
-    current_depth <- getNodeSet(root, sprintf("//word[@depth='%i']", i))
+    current_depth <- getNodeSet(
+      doc,
+      sprintf("//d:word[@depth='%i']", i),
+      namespaces = c(d = "http://paul.egeler.us")
+    )
 
     if (xmlSize(current_depth)) {
 
@@ -112,7 +114,7 @@ generateWordTree <- function(target, wordlist = enable1) {
 
   }
 
-  root
+  doc
 
 }
 
@@ -134,9 +136,22 @@ funnel2 <- function(target, wordlist = enable1) {
 
   result <- generateWordTree(target, wordlist)
 
-  max_depth <- max(xpathSApply(result, "//word", xmlGetAttr, "depth", converter = as.integer))
+  max_depth <- max(
+    xpathSApply(
+      result,
+      "//d:word",
+      xmlGetAttr,
+      "depth",
+      converter = as.integer,
+      namespaces = c(d = "http://paul.egeler.us")
+    )
+  )
 
-  leaves <- getNodeSet(result, sprintf("//word[@depth='%i']", max_depth))
+  leaves <- getNodeSet(
+    result,
+    sprintf("//d:word[@depth='%i']", max_depth),
+    namespaces = c(d = "http://paul.egeler.us")
+    )
 
   paths <- lapply(leaves, getWordPath)
 
