@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<wordTree xmlns="http://paul.egeler.us">
+  <word depth="1" value="gnash">
+    <word depth="2" value="gash">
+      <word depth="3" value="ash">
+        <word depth="4" value="ah"/>
+        <word depth="4" value="as"/>
+        <word depth="4" value="sh"/>
+      </word>
+      <word depth="3" value="gas">
+        <word depth="4" value="as"/>
+      </word>
+    </word>
+  </word>
+</wordTree>

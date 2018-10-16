@@ -192,7 +192,7 @@ funnel2("complecting")
 
 # Bonus 2 -----------------------------------------------------------------
 # Redefine `get_funnel_words` to do steps
-bonus2_get_funnel_words <- function(x, words = enable1) {
+get_funnel_words <- function(x, words = enable1) {
 
   x_len <- nchar(x)
   comb <-
@@ -212,15 +212,43 @@ bonus2_get_funnel_words <- function(x, words = enable1) {
 
 }
 
-bonus2_get_funnel_words("gnash")
+get_funnel_words("gnash")
 ## [1] "ah"   "as"   "ash"  "gas"  "gash" "na"   "nah"  "sh"
 
-bonus2_funnel2 <- function(target, wordlist = enable1) {
-  funnel_lengths <- unique(nchar(bonus2_get_funnel_words(target, wordlist)))
-  length(funnel_lengths) + 1L
+proto_funnel2 <- function(target, wordlist = enable1) {
+
+  char_len <- nchar(target)
+
+  for (i in seq_len(char_len - 2L)) {
+
+    r <- lapply(
+      unique(do.call("c", if (i == 1) list(target) else r)),
+      get_funnel_words,
+      wordlist
+    )
+
+    if (!any(lengths(r))) {           # No results: do not increment i
+      break
+    } else if (char_len - i == 2L) {  # End of word list: increment i and break
+      i <- i + 1
+      break
+    }
+
+  }
+
+  i
+
 }
 
+proto_funnel2("gnash")
+# proto_funnel2("preformationists")
+# proto_funnel2("contradictorinesses")
 
+funnel2("gnash")
+# funnel2("contradictorinesses")
+# funnel2("complecting")
+
+# A parallel attempt at solving bonus2 ------------------------------------
 library(foreach)
 library(doParallel)
 
@@ -233,7 +261,10 @@ lengths_to_check <- which(as.integer(names(enable1_s)) >= 13)
 
 par_time <- system.time({
   final <- foreach(i = lengths_to_check, .combine = "c", .inorder = FALSE) %dopar% {
-    depths <- sapply(enable1_s[[i]], bonus2_funnel2)
+
+    depths <- sapply(enable1_s[[i]], function(x) funnel2(x)$max_depth)
+
+    names(depths) <- enable1_s[[i]]
 
     depths[depths ==  12L]
 
