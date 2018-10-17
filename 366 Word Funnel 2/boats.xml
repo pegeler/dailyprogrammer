@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<wordTree xmlns="http://paul.egeler.us">
+  <word depth="1" value="boats">
+    <word depth="2" value="bats">
+      <word depth="3" value="bas">
+        <word depth="4" value="as"/>
+        <word depth="4" value="ba"/>
+      </word>
+      <word depth="3" value="bat">
+        <word depth="4" value="at"/>
+        <word depth="4" value="ba"/>
+      </word>
+    </word>
+    <word depth="2" value="boas">
+      <word depth="3" value="bas">
+        <word depth="4" value="as"/>
+        <word depth="4" value="ba"/>
+      </word>
+      <word depth="3" value="boa">
+        <word depth="4" value="ba"/>
+        <word depth="4" value="bo"/>
+      </word>
+      <word depth="3" value="bos">
+        <word depth="4" value="bo"/>
+        <word depth="4" value="os"/>
+      </word>
+    </word>
+    <word depth="2" value="boat">
+      <word depth="3" value="bat">
+        <word depth="4" value="at"/>
+        <word depth="4" value="ba"/>
+      </word>
+      <word depth="3" value="boa">
+        <word depth="4" value="ba"/>
+        <word depth="4" value="bo"/>
+      </word>
+      <word depth="3" value="bot">
+        <word depth="4" value="bo"/>
+      </word>
+      <word depth="3" value="oat">
+        <word depth="4" value="at"/>
+      </word>
+    </word>
+    <word depth="2" value="bots">
+      <word depth="3" value="bos">
+        <word depth="4" value="bo"/>
+        <word depth="4" value="os"/>
+      </word>
+      <word depth="3" value="bot">
+        <word depth="4" value="bo"/>
+      </word>
+    </word>
+    <word depth="2" value="oats">
+      <word depth="3" value="oat">
+        <word depth="4" value="at"/>
+      </word>
+    </word>
+  </word>
+</wordTree>
