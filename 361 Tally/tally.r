@@ -25,9 +25,10 @@ tally <- function(x, n_players = 5) {
   x_s <- strsplit(x,character(0))[[1]]
 
   scores <-
-    sapply(
+    vapply(
       seq_len(n_players),
-      function(i) sum(x_s == letters[i]) - sum(x_s == LETTERS[i])
+      function(i) sum(x_s == letters[i]) - sum(x_s == LETTERS[i]),
+      integer(1L)
     )
 
   rank_order <- order(scores, decreasing = TRUE)
