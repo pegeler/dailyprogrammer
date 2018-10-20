@@ -19,9 +19,10 @@ remove_letters <- function(i, x) {
 get_funnel_words <- function(x, words) {
 
   candidates <-
-    sapply(
+    vapply(
       seq_len(nchar(x)),
       remove_letters,
+      character(1L),
       strsplit(x, character(0L))[[1]]
     )
 
@@ -202,9 +203,10 @@ get_funnel_words <- function(x, words = enable1) {
       seq_len(x_len)
       ))
 
-  candidates <- sapply(
+  candidates <- vapply(
     comb,
     remove_letters,
+    character(1L),
     strsplit(x, character(0L))[[1]]
   )
 
