@@ -1,8 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <set>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <set>
+#include <string>
+
 using namespace std;
 
 bool funnel(string a, string b) 
