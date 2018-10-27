@@ -4,3 +4,6 @@ DEPS=
 
 funnel: funnel.cpp
 	$(CXX) $(CXXFLAGS) $@.cpp -o $@
+	ln -s funnel bonus
+	ln -s funnel bonus2
+
