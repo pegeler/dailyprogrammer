@@ -88,7 +88,6 @@ names(
 
 candidates_13 <- words_split[nchar(names(words)) == 13]
 
-
 candidates_13[
   vapply(
     candidates_13,
@@ -105,13 +104,13 @@ words[names(words) == "intransigence"]
 # --.---.---.-- is one of five 13-character sequences that does not appear in
 # the encoding of any word. Find the other four.
 
+words_13 <- words[nchar(words) >= 13L]
+
 all_seqs_13 <- vapply(
   0:(2**13 - 1),
   function(n) paste(ifelse(rev(intToBits(n)[1:13]), ".", "-"), collapse = ""),
   character(1)
 )
-
-words_13 <- words[nchar(words) >= 13L]
 
 all_seqs_13[
   vapply(
@@ -122,3 +121,29 @@ all_seqs_13[
 ]
 
 ## [1] "---.----.----" "---.---.-----" "---.---.---.-" "--.---.------" "--.---.---.--"
+
+# Bonus 5 Parallel ----------------------------------------------------------
+# install.packages("doParallel")
+library(doParallel)
+
+cluster <- makeCluster(detectCores() - 1L)
+
+registerDoParallel(cluster)
+
+par.time <- system.time({
+  out <- foreach(
+    i = 0:(2**13 - 1),
+    .combine = "c",
+    .inorder = FALSE,
+    .multicombine = TRUE
+  ) %dopar% {
+    s <- paste(ifelse(rev(intToBits(i)[1:13]), ".", "-"), collapse = "")
+    if ( !any(grepl(s, words_13, fixed = TRUE)) ) s
+  }
+})
+
+stopCluster(cluster)
+
+out
+
+par.time

@@ -88,7 +88,7 @@ generateWordTree <- function(target, wordlist = enable1) {
 
   char_len <- nchar(target)
 
-  doc <- xmlParse(
+  doc <- XML::xmlParse(
     '<?xml version="1.0"?><wordTree xmlns="http://paul.egeler.us" />',
     asText = TRUE
   )
@@ -171,7 +171,7 @@ print.wordFunnel <- function(x, ...) {
 
     path <- x$paths[[sample(seq_along(x$paths), 1L)]]
 
-    cat(paste(path, collapse = " => "))
+    cat(paste(path, collapse = " => "), "\n")
 }
 
 funnel2("gnash")      # => 4
@@ -251,10 +251,9 @@ funnel2("gnash")
 # funnel2("complecting")
 
 # A parallel attempt at solving bonus2 ------------------------------------
-library(foreach)
 library(doParallel)
 
-clust <- makeCluster(min(5L, detectCores() - 1L))
+clust <- makeCluster(detectCores() - 1L)
 registerDoParallel(clust)
 
 enable1_s <- split(enable1, nchar(enable1))
