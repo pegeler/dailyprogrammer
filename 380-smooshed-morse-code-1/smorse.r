@@ -23,6 +23,17 @@ s=function(w)paste(m[match(el(strsplit(w,"")),letters)],collapse="") # 68 bytes
 identical(s("sos"), smorse("sos"))
 ## [1] TRUE
 
+# Rcpp version ------------------------------------------------------------
+
+if ( require(Rcpp) ) {
+  sourceCpp("380-smooshed-morse-code-1/smorse.cpp")
+  microbenchmark::microbenchmark(
+    smorse("sos"),
+    s("sos"),
+    smorse_cpp("sos", morse)
+  )
+}
+
 # ** Bonus ** -------------------------------------------------------------
 
 if ( !file.exists("enable1.rda") ) {
