@@ -13,6 +13,16 @@ smorse <- function(word) {
 sapply(c("sos", "daily", "programmer", "bits", "three"), smorse)
 
 
+# golf version ------------------------------------------------------------
+
+m <- morse
+
+# Assuming I get `m` for free...
+s=function(w)paste(m[match(el(strsplit(w,"")),letters)],collapse="") # 68 bytes
+
+identical(s("sos"), smorse("sos"))
+## [1] TRUE
+
 # ** Bonus ** -------------------------------------------------------------
 
 if ( !file.exists("enable1.rda") ) {
