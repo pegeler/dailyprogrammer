@@ -1,13 +1,24 @@
 #include <Rcpp.h>
-#include <string>
 
-// [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::export]]
-std::string smorse_cpp(std::string word, Rcpp::StringVector morse)
+Rcpp::StringVector smorse_cpp(Rcpp::StringVector words, Rcpp::StringVector code)
 {
-  std::string out;
-  for ( char c : word ) // requires c++11
-    out += morse(c - 0x61);
+  int n = words.size();
+  Rcpp::StringVector out(n);
+  out.names() = words;
+
+  for ( int i = 0; i < n; i++ )
+  {
+    for ( int j = 0; j < words[i].size(); j++ )
+    {
+      int c = words[i][j] - 0x61;
+      if ( c >= 0 && c < 26 )
+        out[i] += code(c);
+      else
+        Rcpp::stop("Character out of bounds: '%s'", words[i][j]);
+    }
+  }
+
   return out;
 }
 

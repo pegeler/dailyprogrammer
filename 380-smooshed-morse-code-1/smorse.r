@@ -10,7 +10,8 @@ smorse <- function(word) {
 }
 
 # Get output
-sapply(c("sos", "daily", "programmer", "bits", "three"), smorse)
+test_input <- c("sos", "daily", "programmer", "bits", "three")
+sapply(test_input, smorse)
 
 
 # golf version ------------------------------------------------------------
@@ -27,6 +28,12 @@ identical(s("sos"), smorse("sos"))
 
 if ( require(Rcpp) ) {
   sourceCpp("380-smooshed-morse-code-1/smorse.cpp")
+
+  identical(
+    sapply(test_input, smorse),
+    smorse_cpp(test_input, morse)
+  )
+
   microbenchmark::microbenchmark(
     smorse("sos"),
     s("sos"),
@@ -45,6 +52,14 @@ if ( !file.exists("enable1.rda") ) {
 }
 
 words <- sapply(enable1, smorse)
+
+if ( existsFunction("smorse_cpp") ) {
+  microbenchmark::microbenchmark(
+    sapply(enable1, s),
+    smorse_cpp(enable1, m),
+    times = 10L
+  )
+}
 
 words_split <- strsplit(words, character(0), TRUE)
 
