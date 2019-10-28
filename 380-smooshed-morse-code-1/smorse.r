@@ -104,7 +104,7 @@ grep("-{15}", words, value = TRUE)
 # dashes. 'counterdemonstrations' is one of two 21-letter words that's perfectly
 # balanced. Find the other one.
 
-candidates_21 <- words_split[nchar(names(words)) == 21]
+candidates_21 <- words_split[nchar(enable1) == 21]
 
 names(
   candidates_21[
@@ -122,7 +122,7 @@ names(
 # which is a palindrome (i.e. the string is the same when reversed). Find the
 # only 13-letter word that encodes to a palindrome.
 
-candidates_13 <- words_split[nchar(names(words)) == 13]
+candidates_13 <- words_split[nchar(enable1) == 13]
 
 candidates_13[
   vapply(
@@ -162,18 +162,19 @@ all_seqs_13[
 # install.packages("doParallel")
 library(doParallel)
 
+Rcpp::sourceCpp("380-smooshed-morse-code-1/make_seq_13.cpp")
+
 cluster <- makeCluster(detectCores() - 1L)
 
 registerDoParallel(cluster)
 
 par.time <- system.time({
   out <- foreach(
-    i = 0:(2**13 - 1),
+    s = make_all_seqs_13(),
     .combine = "c",
     .inorder = FALSE,
     .multicombine = TRUE
   ) %dopar% {
-    s <- paste(ifelse(rev(intToBits(i)[1:13]), ".", "-"), collapse = "")
     if ( !any(grepl(s, words_13, fixed = TRUE)) ) s
   }
 })
