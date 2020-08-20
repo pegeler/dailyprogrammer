@@ -6,13 +6,13 @@ CCFLAGS = -O2
 all: necklace repeats bonus2
 
 necklace: necklace.c
-	$(CC) $^ -o $@
+	$(CC) $(CCFLAGS) $^ -o $@
 
 repeats: repeats.c
-	$(CC) $^ -o $@
+	$(CC) $(CCFLAGS) $^ -o $@
 
 bonus2: bonus2.c
-	$(CC) $^ -o $@
+	$(CC) $(CCFLAGS) $^ -o $@
 
 clean:
 	rm necklace repeats bonus2

@@ -48,12 +48,13 @@ int search(Node *n, char **matches)
 
 int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if (argc != 2) {
+    fprintf(stderr, "Usage: %s FILE\n", argv[0]);
     return 1;
+  }
 
-  /* read all words into list of linked lists organized by nchar */
+  /* read all words into array of linked lists organized by nchar */
   FILE *f = fopen(argv[1], "r");
-
   char word[MAX_NCHAR];
   Node **nodes = malloc(sizeof(Node*) * (MAX_NCHAR + 1));
   while (fgets(word, MAX_NCHAR, f) != NULL) {
