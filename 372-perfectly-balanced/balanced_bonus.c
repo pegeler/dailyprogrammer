@@ -4,35 +4,40 @@
 
 #define MAX_LINE 1000
 
+void count_chars(char *s, int *h)
+{
+  int c;
+  while ((c = *(s++)) != '\0') {
+    if (c >= 'a' && c <= 'z') {
+      h[c - 'a']++;
+    } else {
+      fprintf(stderr, "Unknown character: %c\n", c);
+      exit(EXIT_FAILURE);
+    }
+  }
+}
+
+int review_tally(int *h)
+{
+  for (int i=0, n=0; i < 26; i++)
+    if (!h[i])
+      continue;
+    else if (n > 0 && n != h[i])
+      return 0;
+    else
+      n = h[i];
+  return 1;
+}
+
 int main(int argc, char *argv[])
 {
   char line[MAX_LINE];
-  char *s;
 
-  while ((s = fgets(line, MAX_LINE, stdin)) != NULL) {
-    int c;
-    int letters[26] = {0};
-    s[strlen(s) - 1] = '\0';
-    while ((c = *(s++)) != '\0') {
-      if (c >= 'a' && c <= 'z') {
-        letters[c - 'a']++;
-      } else {
-        fprintf(stderr, "Unknown character: %c\n", c);
-        exit(EXIT_FAILURE);
-      }
-    }
-    int balanced = 1;
-    for (int i=0, n=0; i < 26; i++) {
-      if (!letters[i]) {
-        continue;
-      } else if (n > 0 && n != letters[i]) {
-        balanced = 0;
-        break;
-      } else {
-        n = letters[i];
-      }
-    }
-    printf("%s\n", balanced ? "true" : "false");
+  while (fgets(line, MAX_LINE, stdin) != NULL) {
+    line[strlen(line) - 1] = '\0';
+    int h[26] = {0};
+    count_chars(line, h);
+    printf("%s\n", review_tally(h) ? "true" : "false");
   }
 
   return 0;
