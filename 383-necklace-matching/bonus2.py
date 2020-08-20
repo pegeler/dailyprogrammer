@@ -28,7 +28,7 @@ class MatchList:
     def _canonicalize(s):
         strlen = len(s)
         t = s*2
-        for i in range(strlen):
+        for i in range(1,strlen):
             if s > t[i:(i+strlen)]:
                 s = t[i:(i+strlen)]
         return s
@@ -47,6 +47,7 @@ for line in open(argv[1], 'rt'):
     if len(l) >= 4:
         counts.update(l)
 
-for _, v in counts.matches.items():
+for v in counts.matches.values():
     if v.n == 4:
         print(v.words)
+        break
