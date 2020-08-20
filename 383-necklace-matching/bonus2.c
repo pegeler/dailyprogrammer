@@ -25,17 +25,37 @@ int same(char *a, char *b)
   return 0;
 }
 
+/* search: search for matches */
+int search(Node *n, char **matches)
+{
+  while (n != NULL) {
+    Node *m = n->next;
+    int n_match = 0;
+    matches[n_match++] = n->s;
+    while (m != NULL) {
+      if (same(n->s, m->s)) {
+        matches[n_match++] = m->s;
+        if (n_match == TARGET_MATCHES)
+          return 1;
+      }
+      m = m->next;
+    }
+    n = n->next;
+  }
+  return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
-  Node **nodes = malloc(sizeof(Node*) * (MAX_NCHAR + 1));
-  char **matches = malloc(sizeof(char*) * TARGET_MATCHES);
-
   if (argc != 2)
     return 1;
 
+  /* read all words into list of linked lists organized by nchar */
   FILE *f = fopen(argv[1], "r");
 
   char word[MAX_NCHAR];
+  Node **nodes = malloc(sizeof(Node*) * (MAX_NCHAR + 1));
   while (fgets(word, MAX_NCHAR, f) != NULL) {
     int len = strlen(word) - 1;
     if (len < 4)
@@ -52,28 +72,16 @@ int main(int argc, char *argv[])
     nodes[len] = node;
   }
 
-  int n_match;
-  for (int i=TARGET_MATCHES; i <= MAX_NCHAR; i++) {
-    Node *n = nodes[i];
-    while (n != NULL) {
-      Node *m = n->next;
-      n_match = 0;
-      matches[n_match++] = n->s;
-      while (m != NULL) {
-        if (same(n->s, m->s)) {
-          matches[n_match++] = m->s;
-          if (n_match == TARGET_MATCHES)
-            goto FINISH; /* Considered harmless */
-        }
-        m = m->next;
-      }
-      n = n->next;
-    }
-  }
+  fclose(f);
 
-  FINISH:
+  /* search through each linked list for matching words */
+  int match = 0;
+  char **matches = malloc(sizeof(char*) * TARGET_MATCHES);
+  for (int i=TARGET_MATCHES; i <= MAX_NCHAR && !match; i++)
+    match = search(nodes[i], matches);
 
-  if (n_match ==  4)
+  /* if match, print */
+  if (match)
     for (int i=0; i < TARGET_MATCHES; i++)
       printf("%s%s", matches[i], i != TARGET_MATCHES - 1 ? ", " : "\n");
   else

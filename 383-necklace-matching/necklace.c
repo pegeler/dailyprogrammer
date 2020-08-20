@@ -6,6 +6,8 @@ int same_necklace(char *a, char *b)
   int len = strlen(a);
   if (len != strlen(b))
     return 0;
+  if (len == 0)
+    return 1;
 
   for (int i=0; i < len; i++) {
     int match = 1;
