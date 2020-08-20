@@ -23,8 +23,9 @@ class MatchList:
     
     def __init__(self):
         self.matches = dict()
-        
-    def _canonicalize(self, s):
+    
+    @staticmethod
+    def _canonicalize(s):
         strlen = len(s)
         t = s*2
         for i in range(strlen):
