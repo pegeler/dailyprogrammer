@@ -8,46 +8,26 @@ from __future__ import print_function
 from sys import argv
 
 
-class Match:
-
-    def __init__(self, s):
-        self.n = 1
-        self.words = [s]
-        
-    def update(self, s):
-        self.n += 1
-        self.words.append(s)
+def canonicalize(s):
+    strlen = len(s)
+    t = s*2
+    for i in range(1,strlen):
+        if s > t[i:(i+strlen)]:
+            s = t[i:(i+strlen)]
+    return s
 
 
-class MatchList:
-    
-    def __init__(self):
-        self.matches = dict()
-    
-    @staticmethod
-    def _canonicalize(s):
-        strlen = len(s)
-        t = s*2
-        for i in range(1,strlen):
-            if s > t[i:(i+strlen)]:
-                s = t[i:(i+strlen)]
-        return s
-    
-    def update(self, s):
-        canonical = self._canonicalize(s)
-        try:
-            self.matches[canonical].update(s)
-        except KeyError:
-            self.matches.update({canonical: Match(s)})
-
-
-counts = MatchList()
+matches = dict()
 for line in open(argv[1], 'rt'):
     l = line.strip()
-    if len(l) >= 4:
-        counts.update(l)
+    canonical = canonicalize(l)
+    if len(canonical) >= 4:
+        try:
+            matches[canonical].append(l)
+        except KeyError:
+            matches.update({canonical: [l]})
 
-for v in counts.matches.values():
-    if v.n == 4:
-        print(v.words)
+for v in matches.values():
+    if len(v) == 4:
+        print(v)
         break
