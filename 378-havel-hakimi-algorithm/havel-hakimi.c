@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 /* print: print an array of ints (used for debugging) */
 void print(uint *x, uint len)
