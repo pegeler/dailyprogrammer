@@ -1,19 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
-typedef unsigned int uint;
-
-uint atoi(char *s)
+uint64_t sum_digits(uint64_t x)
 {
-  uint x = 0;
-  char c;
-  while ((c = *(s++)) >= '0' && c <= '9')
-    x = x * 10 + c - '0';
-  return x;
-}
-
-uint sum_digits(uint x)
-{
-  int a = 0;
+  uint64_t a = 0;
   while (x) {
     a += x % 10;
     x /= 10;
@@ -23,7 +14,7 @@ uint sum_digits(uint x)
 
 int main(int argc, char *argv[])
 {
-  uint x = atoi(argv[1]);
+  uint64_t x = strtoull(argv[1], NULL, 10);
   int a;
 
   for (a = 0; x / 10 != 0; a++)
