@@ -1,9 +1,10 @@
+#!/usr/bin/env Rscript
 # inspired by g00glen00b
 
 sum_digits <- function(x, a = 0)
   if (x == 0) a else sum_digits(x %/% 10, a + x %% 10)
 ap <- function(x, c = 0)
-  if (x %/% 10 == 0) c else ap(sum_digits(x), c + 1)
+  if (x < 10) c else ap(sum_digits(x), c + 1)
 
 library(testthat)
 
