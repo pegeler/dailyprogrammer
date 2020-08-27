@@ -1,5 +1,5 @@
 /*
- * Came up with a very similar approach to spin81 and used that code as a hint
+ * Came up with a very similar approach to /u/spin81 and used that code as a hint
  * to fix my off-by-one errors. So thanks spin81!
  */
 #include <stdio.h>
@@ -25,8 +25,11 @@ uint128_t atoui128(char *s)
 void ui128toa(char *s, int max_len, uint128_t x)
 {
   int i, j, c, len;
-  for (i=0; i < max_len-1 && x; i++)
-    s[i] = x % 10 + '0', x /= 10;
+  i=0;
+
+  do
+    s[i++] = x % 10 + '0';
+  while (i < max_len-1 && (x /= 10));
 
   len = i;
 
@@ -45,7 +48,7 @@ uint128_t count(uint128_t a, uint128_t b, int period, int offset)
   uint128_t count = (b-a) / period;
   a = (a + period - offset) % period;
   b = (b + period - offset) % period;
-  if ((a == 0 || a > b) && b != 0 && a != b)
+  if ((a == 0 || a > b) && b != 0)
     count++;
   return count;
 }
@@ -67,8 +70,22 @@ int main(int argc, char *argv[])
   uint128_t a, b, c;
   char output[40];
 
-  if (argc != 3)
+  if (argc == 1) {
+    /* using /u/spin81's assertions */
+    assert(leaps(2016, 2017) == 1);
+    assert(leaps(2019, 2020) == 0);
+    assert(leaps(1900, 1901) == 0);
+    assert(leaps(2000, 2001) == 1);
+    assert(leaps(2800, 2801) == 0);
+    assert(leaps(123456, 123456) == 0);
+    assert(leaps(1234, 5678) == 1077);
+    assert(leaps(123456, 7891011) == 1881475);
+    assert(leaps(123456789101112, 1314151617181920) == 288412747246240);
+    fprintf(stderr, "checks OK\n");
+    return 0;
+  } else if (argc != 3) {
     return 1;
+  }
 
   a = atoui128(argv[1]);
   b = atoui128(argv[2]);
