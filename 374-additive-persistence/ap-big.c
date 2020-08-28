@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
   uint128_t x = atoui128(argv[1]);
   int a;
 
-  for (a = 0; x / 10 != 0; a++)
+  for (a = 0; x > 9; a++)
     x = sum_digits(x);
 
   printf("%d\n", a);
