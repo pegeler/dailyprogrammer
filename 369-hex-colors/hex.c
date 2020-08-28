@@ -28,10 +28,9 @@ Color parse_color(char *s)
 Color mix(Color a, Color b)
 {
   Color out;
-  const double gamma = 2.2;
-  out.r = pow(pow(0.5 * a.r, gamma) + pow(0.5 * b.r, gamma), 1/gamma);
-  out.g = pow(pow(0.5 * a.g, gamma) + pow(0.5 * b.g, gamma), 1/gamma);
-  out.b = pow(pow(0.5 * a.b, gamma) + pow(0.5 * b.b, gamma), 1/gamma);
+  out.r = 0.5 * a.r + 0.5 * b.r;
+  out.g = 0.5 * a.g + 0.5 * b.g;
+  out.b = 0.5 * a.b + 0.5 * b.b;
   out.hexCode = (out.r << 16) + (out.g << 8) + out.b;
   return out;
 }
