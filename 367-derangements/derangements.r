@@ -4,9 +4,10 @@
 D_n <- function(n) factorial(n)/exp(1)
 
 # Golf!
-D=function(n)factorial(n)*sum(rep(c(1,-1),l=n+1)/sapply(0:n,factorial))
+f=factorial;D=function(n)f(n)*sum(rep(c(1,-1),l=n+1)/sapply(0:n,f))
 
 # 71 bytes. Gives precise answer (not estimate).
+# REVISED: 67 bytes.
 
 library(testthat)
 expect_equal(D(1), 0)
