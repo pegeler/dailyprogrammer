@@ -21,14 +21,12 @@ int64_t factorial(int64_t n)
 int64_t D(int64_t n)
 {
   int64_t x = 0, y = 1;
-  int s = n & 1;
   while (n > 1) {
-    if (s)
+    if (n & 1)
       x -= y;
     else
       x += y;
     y *= n--;
-    s = !s;
   }
   return x;
 }
