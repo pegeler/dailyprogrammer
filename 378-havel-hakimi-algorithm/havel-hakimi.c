@@ -21,7 +21,7 @@ uint max_element(uint *x, uint len){
 uint sort(uint *x, uint len)
 {
   uint max = max_element(x, len);
-  uint *a = calloc(sizeof(uint), max + 1);
+  uint *a = calloc(max + 1, sizeof(uint));
   uint out_len = 0;
 
   /* make an array of counts */
