@@ -60,13 +60,12 @@ bonus1()
 def bonus2(word, depth=1):
     max_depth = depth
     candidates = set()
-    for i in range(2, len(word)):
-        for j in combinations(word, i):
-            candidates.add(''.join(j))
-    candidates &= WORDS
-    for word in candidates:
-        if len(word) + depth > 10:
-            max_depth = max(bonus2(word, depth + 1), max_depth)
+    i = len(word) - 1
+    while i > 1 and i + depth > 10:
+        candidates.update({''.join(c) for c in combinations(word, i)} & WORDS)
+        i -= 1
+    for candidate in candidates:
+        max_depth = max(bonus2(candidate, depth + 1), max_depth)
     return max_depth
 
 assert(bonus2("preformationists") == 12)
@@ -94,4 +93,4 @@ run_bonus2()
 ## establishmentarianisms
 ## nonrepresentationalisms
 ## contradictorinesses
-## Runtime was 209.00149s
+## Runtime was 95.466674s
