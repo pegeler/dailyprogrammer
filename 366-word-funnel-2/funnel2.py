@@ -15,12 +15,9 @@ with requests.get('''https://raw.githubusercontent.com/dolph/dictionary/master/e
 
 def funnel2(word):
     max_depth = 1
-    candidates = set()
-    for i in range(len(word)):
-        candidates.add(word[:i] + word[(i+1):])
-    candidates &= WORDS
-    for word in candidates:
-        max_depth = max(funnel2(word) + 1, max_depth)
+    candidates = {word[:i] + word[(i+1):] for i in range(len(word))} & WORDS
+    for candidate in candidates:
+        max_depth = max(funnel2(candidate) + 1, max_depth)
     return max_depth
 
 assert(funnel2("gnash") == 4)
