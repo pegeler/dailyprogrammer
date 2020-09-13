@@ -5,6 +5,7 @@ Created on Sun Sep 13 00:15:02 2020
 
 @author: pablo
 """
+from datetime import datetime
 from itertools import combinations
 import multiprocessing as mp
 import requests
@@ -31,12 +32,26 @@ assert(funnel2("programmer") == 2)
 # =============================================================================
 # Bonus 1
 # =============================================================================
-for x in WORDS:
-    if len(x) > 10 and funnel2(x) == 10:
-        print(x)
-        break
 
+def time_it(func):
+    def wrapper(*args, **kwargs):
+        start_time = datetime.now()
+        res = func(*args, **kwargs)
+        end_time = datetime.now()
+        print("Runtime was {}s".format((end_time - start_time).total_seconds()))
+        return res
+    return wrapper
+
+@time_it
+def bonus1():
+    for x in WORDS:
+        if len(x) > 10 and funnel2(x) == 10:
+            print(x)
+            break
+
+bonus1()
 ## complecting
+## Runtime was 0.25806s
 
 # =============================================================================
 # Bonus 2
@@ -60,20 +75,23 @@ def bonus2_check(word):
     if bonus2(word) == 12:
         return word
 
-found = 0
-pool = mp.Pool(mp.cpu_count())
-for i in pool.imap_unordered(bonus2_check, [w for w in WORDS if len(w) > 12]):
-    if i:
-        print(i)
-        found += 1
-        if found == 6:
-            pool.terminate()
-            break
-pool.close()
+@time_it
+def run_bonus2():
+    found = 0
+    with mp.Pool(mp.cpu_count()) as pool:
+        for i in pool.imap_unordered(bonus2_check, [w for w in WORDS if len(w) > 12]):
+            if i:
+                print(i)
+                found += 1
+                if found == 6:
+                    pool.terminate()
+                    break
 
+run_bonus2()
 ## preformationists
 ## unrepresentativenesses
 ## noncooperationists
 ## establishmentarianisms
 ## nonrepresentationalisms
 ## contradictorinesses
+## Runtime was 209.00149s
