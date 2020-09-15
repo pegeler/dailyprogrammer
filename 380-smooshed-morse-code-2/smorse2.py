@@ -43,8 +43,9 @@ def smalpha(string, codes=MTOC):
             if i == len(string) - 1:
                 out.append(letter)
             else:
-                branches = smalpha(string[(i+1):],
-                                   {k: v for k, v in codes.items() if v != letter})
+                new_codes = codes.copy()
+                del new_codes[CTOM.get(letter)]
+                branches = smalpha(string[(i+1):], new_codes)
                 out.extend(letter + branch for branch in branches)
         i += 1
     return out
