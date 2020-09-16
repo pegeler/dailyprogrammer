@@ -62,6 +62,7 @@ from datetime import datetime
 import requests
 
 
+# Define a decorator function for getting timing
 def time_it(func):
     def wrapper(*args, **kwargs):
         start_time = datetime.now()
@@ -72,16 +73,43 @@ def time_it(func):
     return wrapper
 
 
+# Define new smalpha that returns only first match
+def smalpha_first(string, codes=MTOC):
+    max_ = max_len(codes)
+    i = 0
+    s = ''
+    while i < max_ and i < len(string):
+        s += string[i]
+        letter = codes.get(s)
+        if letter:
+            if i == len(string) - 1:
+                return letter
+            else:
+                new_codes = codes.copy()
+                del new_codes[CTOM.get(letter)]
+                t = smalpha_first(string[(i+1):], new_codes)
+                if t:
+                    return letter + t
+        i += 1
+    return None
+
+
 @time_it
 def bonus1(strings):
     if isinstance(strings, list):
         for s in strings:
-            smalpha(s)
+            smalpha_first(s)
     else:
-        smalpha(strings)
+        smalpha_first(strings)
 
+
+# Test that smalpha_first agrees with previous smalpha
+test_code = ".--...-.-.-.....-.--........----.-.-..---.---.--.--.-.-....-..-...-.---..--.----.."
+assert(smalpha_first(test_code) in smalpha(test_code))
 
 r = requests.get("https://gist.githubusercontent.com/cosmologicon/415be8987a24a3abd07ba1dddc3cf389/raw/9da341fe303a6f3f4922411ffdf7eba5aa3e2191/smorse2-bonus1.in")
 check_codes = r.content.decode().splitlines(False)
 
+# Run bonus1
 bonus1(check_codes)
+# Runtime was 51.936476s
