@@ -16,26 +16,25 @@ def canonicalize(s):
     strlen = len(s)
     t = s * 2
     for i in range(1, strlen):
-        if s > t[i:(i + strlen)]:
-            s = t[i:(i + strlen)]
+        if s > (rotated := t[i:(i + strlen)]):
+            s = rotated
     return s
 
 
 def find_matches(words):
     matches = defaultdict(list)
     for word in words:
-        canonical = canonicalize(word)
-        if len(canonical) >= 4:
+        if len(canonical := canonicalize(word)) >= 4:
             matches[canonical].append(word)
     return matches
 
 
-def main(argv=None):
-    file_ = sys.argv[1] if argv is not None else 'enable1.txt'
-    with open(file_, 'rt') as fh:
+def bonus2(filename=None):
+    filename = filename or 'enable1.txt'
+    with open(filename, 'rt') as fh:
         matches = find_matches(x.strip() for x in fh)
     print(next(filter(lambda x: len(x) == 4, matches.values())))
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    bonus2(sys.argv[1])
