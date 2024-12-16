@@ -40,7 +40,15 @@ set_search <- function(table) {
   function(word) set_contains(word, table)
 }
 
-# contains <- binary_search(c("cat", "cow", "donkey"))
+#' @rdname search_func
+#' @export
+hashtab_search <- function(table) {
+  h <- hashtab(size = length(table))
+  for (e in table) sethash(h, e, TRUE)
+  function(word) gethash(h, word, FALSE)
+}
+
+# contains <- hashtab_search(c("cat", "cow", "donkey"))
 # contains("cat")
 # contains("cow")
 # contains("donkey")

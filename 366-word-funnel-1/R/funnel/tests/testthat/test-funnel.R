@@ -36,7 +36,7 @@ test_that("Bonus 2 works", {
     "spates", "spicks", "spikes", "spines", "tramps", "writes", "yearns",
     "drivers", "plaints", "waivers", "grippers", "rousters", "grabblers",
     "twanglers")
-  bonus2(set_search(enable1)) |> setequal(rubric) |> expect_true()
+  enable1 |> set_search() |> bonus2() |> setequal(rubric) |> expect_true()
 })
 
 context("Search functions")
@@ -55,6 +55,14 @@ test_that("Binary search works", {
 
 test_that("Set search works", {
   contains <- set_search(c("cat", "cow", "donkey"))
+  contains("cat") |> expect_true()
+  contains("cow") |> expect_true()
+  contains("donkey") |> expect_true()
+  contains("bird") |> expect_false()
+})
+
+test_that("Hashtab search works", {
+  contains <- hashtab_search(c("cat", "cow", "donkey"))
   contains("cat") |> expect_true()
   contains("cow") |> expect_true()
   contains("donkey") |> expect_true()

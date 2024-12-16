@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-XPtr<std::unordered_set<std::string>> initialize_set(std::vector<std::string> s) {
+XPtr<std::unordered_set<std::string>> initialize_set(const std::vector<std::string> &s) {
   std::unordered_set<std::string>* uset =
     new std::unordered_set<std::string>(s.begin(), s.end());
   XPtr<std::unordered_set<std::string>> xptr(uset, true);
@@ -14,7 +14,7 @@ XPtr<std::unordered_set<std::string>> initialize_set(std::vector<std::string> s)
 }
 
 // [[Rcpp::export]]
-bool set_contains(std::string word, XPtr<std::unordered_set<std::string>> table) {
+bool set_contains(const std::string &word, XPtr<std::unordered_set<std::string>> table) {
   return table->count(word) == 1;
 }
 

@@ -6,6 +6,10 @@
 \usage{
 bonus2(search_func)
 }
+\arguments{
+\item{search_func}{A function to check to see if a candidate word is in the
+a dictionary.}
+}
 \description{
-Bonus 2
+Find all words in the \code{enable1} dictionary that contains 5 legal funnel words.
 }

@@ -5,6 +5,7 @@
 \alias{sequential_search}
 \alias{binary_search}
 \alias{set_search}
+\alias{hashtab_search}
 \title{Search Functions}
 \usage{
 sequential_search(table)
@@ -12,6 +13,8 @@ sequential_search(table)
 binary_search(table)
 
 set_search(table)
+
+hashtab_search(table)
 }
 \arguments{
 \item{table}{A character vector of dictionary words.}
