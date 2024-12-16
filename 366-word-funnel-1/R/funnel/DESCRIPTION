@@ -1,0 +1,18 @@
+Package: funnel
+Title: Rcpp solution to Daily Programmer 366 Word Funnel
+Version: 0.0.0.9000
+Authors@R: 
+    person("Paul", "Egeler", , "paulegeler@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6948-9498"))
+Description: Demonstrating how to use a C++ STL data structure in an R package.
+License: GPL (>=2)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LinkingTo: 
+    Rcpp
+Imports: 
+    Rcpp
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
