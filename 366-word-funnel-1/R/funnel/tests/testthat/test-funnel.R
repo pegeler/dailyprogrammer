@@ -47,6 +47,8 @@ test_that("Binary search works", {
   contains("cow") |> expect_true()
   contains("donkey") |> expect_true()
   contains("bird") |> expect_false()
+  contains("dog") |> expect_false()
+  contains("elephant") |> expect_false()
 
   contains <- binary_search(c("cat"))
   contains("cat") |> expect_true()
