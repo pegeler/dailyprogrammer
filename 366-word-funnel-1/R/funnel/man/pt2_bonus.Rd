@@ -9,7 +9,8 @@ pt2_bonus(words, wordset)
 \arguments{
 \item{words}{The enable1 list as a character vector.}
 
-\item{wordset}{The enable1 list as an external pointer to a C++ unordered set.}
+\item{wordset}{The enable1 list as an external pointer to a C++ unordered
+set.}
 }
 \description{
 Find the word that has a funnel depth of 10

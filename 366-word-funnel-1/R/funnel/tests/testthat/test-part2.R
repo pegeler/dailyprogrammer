@@ -32,4 +32,5 @@ test_that("Bonus works", {
 })
 
 test_that("Bonus 2 works", {
+  pt2_bonus2("preformationists", word_set) |> expect_equal(12L)
 })

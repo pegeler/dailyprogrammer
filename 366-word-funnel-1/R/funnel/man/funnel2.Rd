@@ -11,7 +11,7 @@ cpp_funnel2(x, wordset)
 r_funnel2(x, search_func)
 }
 \arguments{
-\item{x}{The word to test}
+\item{x}{The word to test.}
 
 \item{search_func}{A function to check to see if a word is valid.}
 }
