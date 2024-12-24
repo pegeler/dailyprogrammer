@@ -23,6 +23,12 @@ test_that("Rcpp funnel works", {
 })
 
 test_that("Bonus works", {
+  long_words <- enable1[nchar(enable1) > 10]
+  long_words[vapply(long_words, cpp_funnel2, integer(1), word_set) == 10] |>
+    expect_equal("complecting")
+
+  # This is faster because of early exit.
+  pt2_bonus(enable1, word_set) |> expect_equal("complecting")
 })
 
 test_that("Bonus 2 works", {
