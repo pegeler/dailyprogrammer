@@ -5,6 +5,10 @@
 
 using namespace Rcpp;
 
+//' Create an external pointer to a C++ unordered set
+//'
+//' @param s The character vector to be used in the set.
+//' @export
 // [[Rcpp::export]]
 XPtr<std::unordered_set<std::string>> initialize_set(const std::vector<std::string> &s) {
   std::unordered_set<std::string>* uset =

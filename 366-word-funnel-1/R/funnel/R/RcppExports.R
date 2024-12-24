@@ -7,6 +7,16 @@ cpp_funnel <- function(a, b) {
     .Call(`_funnel_cpp_funnel`, a, b)
 }
 
+#' @rdname funnel2
+#' @export
+cpp_funnel2 <- function(x, wordset) {
+    .Call(`_funnel_cpp_funnel2`, x, wordset)
+}
+
+#' Create an external pointer to a C++ unordered set
+#'
+#' @param s The character vector to be used in the set.
+#' @export
 initialize_set <- function(s) {
     .Call(`_funnel_initialize_set`, s)
 }

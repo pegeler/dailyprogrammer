@@ -11,14 +11,26 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // cpp_funnel
-bool cpp_funnel(std::string a, std::string b);
+bool cpp_funnel(const std::string& a, const std::string& b);
 RcppExport SEXP _funnel_cpp_funnel(SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type a(aSEXP);
-    Rcpp::traits::input_parameter< std::string >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_funnel(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_funnel2
+int cpp_funnel2(const std::string& x, const XPtr<std::unordered_set<std::string>> wordset);
+RcppExport SEXP _funnel_cpp_funnel2(SEXP xSEXP, SEXP wordsetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::string& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const XPtr<std::unordered_set<std::string>> >::type wordset(wordsetSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_funnel2(x, wordset));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -48,6 +60,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_funnel_cpp_funnel", (DL_FUNC) &_funnel_cpp_funnel, 2},
+    {"_funnel_cpp_funnel2", (DL_FUNC) &_funnel_cpp_funnel2, 2},
     {"_funnel_initialize_set", (DL_FUNC) &_funnel_initialize_set, 1},
     {"_funnel_set_contains", (DL_FUNC) &_funnel_set_contains, 2},
     {NULL, NULL, 0}
