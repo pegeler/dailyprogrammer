@@ -1,6 +1,6 @@
 Package: funnel
 Title: Rcpp solution to Daily Programmer 366 Word Funnel
-Version: 0.0.0.9000
+Version: 0.0.0
 Authors@R: 
     person("Paul", "Egeler", , "paulegeler@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6948-9498"))

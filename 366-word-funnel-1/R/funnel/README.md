@@ -1,6 +1,13 @@
 Word Funnel
 ===========
 
+## Installation
+
+```r
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+remotes::install_github("pegeler/dailyprogrammer/366-word-funnel-r-pkg")
+```
+
 ## [2018-08-20] Challenge #366 [Easy] Word funnel 1
 
 <https://www.reddit.com/r/dailyprogrammer/comments/98ufvz/20180820_challenge_366_easy_word_funnel_1/?st=jmr7nnz4&sh=478ef928>
