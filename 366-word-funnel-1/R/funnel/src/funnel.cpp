@@ -1,8 +1,11 @@
 #include <Rcpp.h>
-#include <string>
 #include <algorithm>
-#include <unordered_set>
+#include <iterator>
+#include <string>
 #include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 using namespace Rcpp;
 
@@ -53,22 +56,26 @@ int cpp_funnel2(
   return depth;
 }
 
-std::unordered_map<size_t, std::unordered_set<std::string>>
-generate_candidates(
+std::vector<std::string> make_all_funnel_words_any_depth(
   const std::string &s,
   const XPtr<std::unordered_set<std::string>> wordset,
   int depth
 ) {
   int word_len = s.size() - 1;
-  std::unordered_map<size_t, std::unordered_set<std::string>> candidates;
-  candidates[word_len] = make_all_funnel_words(s);
+  std::vector<std::string> final;
+  auto prev = make_all_funnel_words(s);
+  auto pred = [wordset](const std::string &str){return wordset->count(str) == 1;};
+
   while (word_len > 1 && depth + word_len > 10) {
-    for (const auto &word : candidates[word_len--]) {
+    std::unordered_set<std::string> curr(--word_len);
+    for (const auto &word : prev) {
       auto tmp = make_all_funnel_words(word);
-      candidates[word_len].insert(tmp.begin(), tmp.end());
+      std::move(tmp.begin(), tmp.end(), std::inserter(curr, curr.end()));
     }
+    std::copy_if(prev.begin(), prev.end(), std::back_inserter(final), pred);
+    prev = std::move(curr);
   }
-  return candidates;
+  return final;
 }
 
 //' Part 2 Bonus 2
@@ -87,10 +94,8 @@ int pt2_bonus2(
     int depth = 1
 ) {
   int max_depth = depth;
-  for (const auto &[l, words] : generate_candidates(x, wordset, depth))
-    for (const auto &word : words)
-      if (wordset->count(word) == 1)
-        max_depth = std::max(max_depth, pt2_bonus2(word, wordset, depth + 1));
+  for (const auto &word : make_all_funnel_words_any_depth(x, wordset, depth))
+    max_depth = std::max(max_depth, pt2_bonus2(word, wordset, depth + 1));
   return max_depth;
 }
 
