@@ -12,8 +12,6 @@ test_that("R funnel works", {
   r_funnel2("programmer", set_s) |> expect_equal(2L)
 })
 
-
-
 test_that("Rcpp funnel works", {
   cpp_funnel2("gnash", word_set) |> expect_equal(4L)
   cpp_funnel2("princesses", word_set) |> expect_equal(9L)
@@ -33,4 +31,5 @@ test_that("Bonus works", {
 
 test_that("Bonus 2 works", {
   pt2_bonus2("preformationists", word_set) |> expect_equal(12L)
+  pt2_bonus2("unrepresentativenesses", word_set) |> expect_equal(12L)
 })

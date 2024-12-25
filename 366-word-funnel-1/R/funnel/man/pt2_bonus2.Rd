@@ -9,7 +9,7 @@ pt2_bonus2(x, wordset, depth = 1L)
 \arguments{
 \item{x}{The word to test.}
 
-\item{wordset}{The list of valid wods as an external pointer to a C++
+\item{wordset}{The list of valid words as an external pointer to a C++
 unordered set.}
 }
 \description{

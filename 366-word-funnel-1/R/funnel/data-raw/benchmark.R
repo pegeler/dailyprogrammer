@@ -28,3 +28,7 @@ bench::mark(
   r_funnel2("princesses", set_s),
   cpp_funnel2("princesses", word_set)
 )
+
+long_words <- enable1[nchar(enable1) > 12]
+system.time(hits <- vapply(long_words, pt2_bonus2, integer(1L), word_set) == 12L)
+long_words[hits]

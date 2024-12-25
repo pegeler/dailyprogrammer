@@ -19,7 +19,7 @@ cpp_funnel2 <- function(x, wordset) {
 #' a single step.
 #'
 #' @param x The word to test.
-#' @param wordset The list of valid wods as an external pointer to a C++
+#' @param wordset The list of valid words as an external pointer to a C++
 #'   unordered set.
 #' @export
 pt2_bonus2 <- function(x, wordset, depth = 1L) {
