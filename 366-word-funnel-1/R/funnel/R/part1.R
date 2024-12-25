@@ -1,17 +1,17 @@
 #' Part 1 Word funnel
-#' @param x The base word
-#' @param y The candidate word
-#' @returns A logical indicating if `x` can go into `y`
+#' @param a The base word
+#' @param b The candidate word
+#' @returns A logical indicating if `a` can go into `b`
 #' @name funnel
 #' @export
-r_funnel <- function(x, y) {
+r_funnel <- function(a, b) {
   # If nchar is not n - 1 then it is definitely wrong
-  if (nchar(x) != nchar(y) + 1) return(FALSE)
+  if (nchar(a) != nchar(b) + 1) return(FALSE)
 
   # Fragment each word into character vector
-  strings <- strsplit(c(x,y), "")
+  strings <- strsplit(c(a,b), "")
 
-  # Remove each character one by one and find out the resulting vector matches y
+  # Remove each character one by one and find out the resulting vector matches b
   any(
     vapply(
       seq_along(strings[[1]]),

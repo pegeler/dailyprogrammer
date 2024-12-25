@@ -7,6 +7,7 @@ cpp_funnel <- function(a, b) {
     .Call(`_funnel_cpp_funnel`, a, b)
 }
 
+#' @param wordset The enable1 list as an external pointer to a C++ unordered set.
 #' @rdname funnel2
 #' @export
 cpp_funnel2 <- function(x, wordset) {
@@ -15,15 +16,15 @@ cpp_funnel2 <- function(x, wordset) {
 
 #' Part 2 Bonus 2
 #'
-#' Find the depth of a word funnel when more than one letter can be skipped in
-#' a single step.
+#' Find if the depth of a word funnel is 12 when more than one letter can be
+#' skipped in a single step.
 #'
 #' @param x The word to test.
 #' @param wordset The list of valid words as an external pointer to a C++
 #'   unordered set.
 #' @export
-pt2_bonus2 <- function(x, wordset, depth = 1L) {
-    .Call(`_funnel_pt2_bonus2`, x, wordset, depth)
+pt2_bonus2 <- function(x, wordset) {
+    .Call(`_funnel_pt2_bonus2`, x, wordset)
 }
 
 #' Create an external pointer to a C++ unordered set

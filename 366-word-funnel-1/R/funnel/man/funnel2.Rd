@@ -13,6 +13,8 @@ r_funnel2(x, search_func)
 \arguments{
 \item{x}{The word to test.}
 
+\item{wordset}{The enable1 list as an external pointer to a C++ unordered set.}
+
 \item{search_func}{A function to check to see if a word is valid.}
 }
 \description{

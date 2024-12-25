@@ -42,6 +42,7 @@ std::unordered_set<std::string> make_all_funnel_words(const std::string &s) {
   return set;
 }
 
+//' @param wordset The enable1 list as an external pointer to a C++ unordered set.
 //' @rdname funnel2
 //' @export
 // [[Rcpp::export]]
@@ -78,25 +79,32 @@ std::vector<std::string> make_all_funnel_words_any_depth(
   return final;
 }
 
-//' Part 2 Bonus 2
-//'
-//' Find the depth of a word funnel when more than one letter can be skipped in
-//' a single step.
-//'
-//' @param x The word to test.
-//' @param wordset The list of valid words as an external pointer to a C++
-//'   unordered set.
-//' @export
-// [[Rcpp::export]]
-int pt2_bonus2(
+int pt2_bonus2_loop(
     const std::string &x,
     const XPtr<std::unordered_set<std::string>> wordset,
     int depth = 1
 ) {
   int max_depth = depth;
   for (const auto &word : make_all_funnel_words_any_depth(x, wordset, depth))
-    max_depth = std::max(max_depth, pt2_bonus2(word, wordset, depth + 1));
+    max_depth = std::max(max_depth, pt2_bonus2_loop(word, wordset, depth + 1));
   return max_depth;
+}
+
+//' Part 2 Bonus 2
+//'
+//' Find if the depth of a word funnel is 12 when more than one letter can be
+//' skipped in a single step.
+//'
+//' @param x The word to test.
+//' @param wordset The list of valid words as an external pointer to a C++
+//'   unordered set.
+//' @export
+// [[Rcpp::export]]
+bool pt2_bonus2(
+    const std::string &x,
+    const XPtr<std::unordered_set<std::string>> wordset
+) {
+  return pt2_bonus2_loop(x, wordset) == 12;
 }
 
 /*** R

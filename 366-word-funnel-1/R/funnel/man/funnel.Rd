@@ -8,15 +8,15 @@
 \usage{
 cpp_funnel(a, b)
 
-r_funnel(x, y)
+r_funnel(a, b)
 }
 \arguments{
-\item{x}{The base word}
+\item{a}{The base word}
 
-\item{y}{The candidate word}
+\item{b}{The candidate word}
 }
 \value{
-A logical indicating if \code{x} can go into \code{y}
+A logical indicating if \code{a} can go into \code{b}
 }
 \description{
 Part 1 Word funnel

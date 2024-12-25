@@ -4,7 +4,7 @@
 \alias{pt2_bonus2}
 \title{Part 2 Bonus 2}
 \usage{
-pt2_bonus2(x, wordset, depth = 1L)
+pt2_bonus2(x, wordset)
 }
 \arguments{
 \item{x}{The word to test.}
@@ -13,6 +13,6 @@ pt2_bonus2(x, wordset, depth = 1L)
 unordered set.}
 }
 \description{
-Find the depth of a word funnel when more than one letter can be skipped in
-a single step.
+Find if the depth of a word funnel is 12 when more than one letter can be
+skipped in a single step.
 }
