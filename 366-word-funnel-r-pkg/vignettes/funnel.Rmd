@@ -1,0 +1,221 @@
+---
+title: "Solving a word funnel programming challenge"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{funnel}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(funnel)
+library(testthat)
+```
+
+
+## Introduction
+
+This package solves the two of reddit r/dailyprogrammer challenges
+[word funnel 1](https://www.reddit.com/r/dailyprogrammer/comments/98ufvz/20180820_challenge_366_easy_word_funnel_1/)
+and
+[word funnel 2](https://www.reddit.com/r/dailyprogrammer/comments/99d24u/20180822_challenge_366_intermediate_word_funnel_2/). We will be using them as a pedagogical tool to
+explore advanced R concepts. Concepts include:
+
+- Functional programming in R
+    - Recursion
+    - Closures
+    - Pipes (`|>`)
+    - Higher order functions
+        - Applying functions over collections (map-like operations)
+        - Passing functions into functions and returning functions from functions
+- The Rcpp package
+    - Including Rcpp in a package
+    - Identifying performance bottlenecks in R code and rewriting them in C++
+    - Passing around pointers to C++ objects within the R session using
+      [`Rcpp::Xptr()`](https://www.r-bloggers.com/2010/01/external-pointers-with-rcpp/)
+    - Implicit conversion between R types and C++ primitive, standard library,
+      and standard template library (STL) types
+- Data structures and algorithms
+    - Comparing the performance of various search algorithms, including linear,
+      binary, set membership, and hashmap membership.
+    - Using the C++ standard library to gain access to advanced container types
+      and algorithms not available in base R
+    - Using non-standard R data types
+      ([`hashtab()`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/hashtab.html))
+      to improve performance
+- Literate programming in R
+    - Package-oriented [project compendium](https://www.jstor.org/stable/27594227)
+    - Creating package datasets and tests to augment the compendium
+    - Documenting supporting functions using
+      [Roxygen](https://cran.r-project.org/package=roxygen2)
+    - Vignettes as project write-ups using
+      [Rmarkdown](https://cran.r-project.org/package=rmarkdown) (this document)
+
+These toy problems will provide just enough complexity to warrant a
+package-oriented project compendium and showcase its strengths, while remaining
+simple enough so as not to get lost in project details. The challenges are also
+easy to understand but of sufficient depth that they can be implemented a
+naive way and a more sophisticated way to compare performance.
+
+## Part 1
+
+> Given two strings of letters, determine whether the second can be made from
+the first by removing one letter. The remaining letters must stay in the same
+order.
+
+### Examples
+
+```
+funnel("leave", "eave") => true
+funnel("reset", "rest") => true
+funnel("dragoon", "dragon") => true
+funnel("eave", "leave") => false
+funnel("sleet", "lets") => false
+funnel("skiff", "ski") => false
+```
+
+### Solution
+
+In the trivial case, we can be assured the result is `FALSE` if the number of
+characters in the second string is not one less than the first. Otherwise, we
+will need to examine each string by indexing into it. In R, we can index into
+a single string in a character vector, but we cannot index into a single
+character into that string. So the approach here will be to split each string
+using `strplit()`. This will likely cause a fairly significant performance hit
+over a language like Python or C++ because it will result in memory allocations
+for two new character vectors (plus a list to contain them). Not to mention the
+overhead for doing the split. This challenge can be fairly simply completed in
+R but it will not be efficient.
+
+```r
+r_funnel <- function(a, b) {
+  # If nchar is not n - 1 then it is definitely wrong
+  if (nchar(a) != nchar(b) + 1) return(FALSE)
+
+  # Fragment each word into character vector
+  strings <- strsplit(c(a, b), character(0))
+
+  # Remove each character one by one and find out the resulting vector matches b
+  any(
+    vapply(
+      seq_along(strings[[1]]),
+      \(i) all(strings[[1]][-i] == strings[[2]]),
+      logical(1L)
+    )
+  )
+}
+```
+
+The Rcpp implementation is radically simpler. Note that Rcpp will automatically
+convert a single-element R character vector into the C++ standard library's
+string type `std::string`. From there, we can access each element of each string
+using the `[]` operator to do our comparisons.
+
+```c++
+bool cpp_funnel(const std::string &a, const std::string &b) {
+  size_t b_len = b.size();
+  if (a.size() != b_len + 1) return false;
+
+  bool skipped = false;
+
+  for(size_t i=0, j=0; j < b_len;) {
+    if (a[i] != b[j]) {
+      if (skipped) return false;
+      skipped = true;
+      i++;
+    }
+    else i++, j++;
+  }
+
+  return true;
+}
+```
+
+### Tests
+
+This is the first instance where we demonstrate an advantage of using a
+package-oriented project compendia. We can include automated tests to ensure
+that our functions are performing as expected and run those tests with the
+touch of a button. Assuming our project is already set up as a package, running
+`usethis::use_test("part1")` will set up `testthat` in your project and create
+a new test file for you to modify. We can put the following tests in the file
+and then run <kbd>Ctrl</kbd> + <kbd>Shft</kbd> + <kbd>t</kbd> to run the tests.
+
+```{r pt1-funnel-tests}
+test_that("R funnel works", {
+  r_funnel("leave", "eave")     |> expect_true()
+  r_funnel("reset", "rest")     |> expect_true()
+  r_funnel("dragoon", "dragon") |> expect_true()
+  r_funnel("eave", "leave")     |> expect_false()
+  r_funnel("sleet", "lets")     |> expect_false()
+  r_funnel("skiff", "ski")      |> expect_false()
+})
+
+test_that("Rcpp funnel works", {
+  cpp_funnel("leave", "eave")     |> expect_true()
+  cpp_funnel("reset", "rest")     |> expect_true()
+  cpp_funnel("dragoon", "dragon") |> expect_true()
+  cpp_funnel("eave", "leave")     |> expect_false()
+  cpp_funnel("sleet", "lets")     |> expect_false()
+  cpp_funnel("skiff", "ski")      |> expect_false()
+})
+```
+
+Yay! Both implementations return expected results for provided example data. 🥳
+
+For more on creating packages, I recommend
+[Hadley Wickam's _R Packages_](https://r-pkgs.org/) and the 
+[`usethis` package](cran.r-project.org/package=usethis).
+
+### Performance
+
+It's good that we were able to solve this problem in pure R since there are
+various reasons why we might not want to get Rcpp involved. For example,
+
+- There is more overhead to get Rcpp set up.
+- The compilation step requires build tools for the target machine, which are
+  not always available by default
+- C++ code is "lower level", which can make it more difficult to reason about
+  a problem vs a "higher level" language like R which is designed for being
+  expressive in a specific domain.
+- R is portable and very shareable.
+
+But there are times when either the advantages outweigh the disadvantages or
+the disadvantages are minimized due to external factors. R does lots of tricks
+under the hood to get good performance, so going to C++ is not always a silver
+bullet. But some places where R might need some help are in string handling,
+recursion and loops (sometimes), and data structures and algorithms.
+
+The disadvantage of needing build tools is minimized when shipping code on
+[CRAN]() since they will compile code to any target that may not have build
+tools pre-installed. Packaging code itself is a strategy for making code more
+shareable.
+
+This challenge is a string handling problem, which was selected especially
+because it can be one of R's weaker performance domains. We might expect a
+significant difference in performance when benchmarking, and indeed we see a ~16
+fold speed gain using C++. This could be very significant if this function is
+expected to be used frequently, such as in a package meant for wide distribution
+or if it needs to be used inside a tight loop (for example as part of an
+exhaustive search algorithm).
+
+```{r pt1-funnel-benchmark}
+bench::mark(
+  r_funnel("sleet", "lets"),
+  cpp_funnel("sleet", "lets")
+)
+
+bench::mark(
+  r_funnel("dragoon", "dragon"),
+  cpp_funnel("dragoon", "dragon")
+)
+```
+
+[enable1 word set](https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt)
