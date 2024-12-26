@@ -75,9 +75,150 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pegeler/dailyprogrammer" class="external-link">funnel</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
+</h2>
+<ul>
+<li>
+<a href="#introduction">Introduction</a>
+</li>
+<li>
+<a href="#installation">Installation</a>
+</li>
+<li>
+<a href="#part-1">Part 1</a>
+</li>
+<ul>
+<li>
+<a href="#prompt">Prompt</a>
+</li>
+<li>
+<a href="#example-output">Example Output</a>
+</li>
+<li>
+<a href="#solution">Solution</a>
+</li>
+<li>
+<a href="#tests">Tests</a>
+</li>
+<li>
+<a href="#performance">Performance</a>
+</li>
+</ul>
+<li>
+<a href="#part-1-bonus-1">Part 1 Bonus 1</a>
+</li>
+<ul>
+<li>
+<a href="#prompt-1">Prompt</a>
+</li>
+<li>
+<a href="#example-output-1">Example Output</a>
+</li>
+<li>
+<a href="#external-datasets">External Datasets</a>
+</li>
+<li>
+<a href="#solution-1">Solution</a>
+</li>
+<ul>
+<li>
+<a href="#roxygen-comments">Roxygen Comments</a>
+</li>
+<li>
+<a href="#support-functions">Support Functions</a>
+</li>
+<li>
+<a href="#back-to-the-solution">Back to the Solution</a>
+</li>
+</ul>
+<li>
+<a href="#search-algorithms">Search Algorithms</a>
+</li>
+<ul>
+<li>
+<a href="#binary-search">Binary Search</a>
+</li>
+<li>
+<a href="#hash-table">Hash Table</a>
+</li>
+<li>
+<a href="#set">Set</a>
+</li>
+<li>
+<a href="#benchmark">Benchmark</a>
+</li>
+</ul>
+</ul>
+<li>
+<a href="#part-1-bonus-2">Part 1 Bonus 2</a>
+</li>
+<ul>
+<li>
+<a href="#prompt-2">Prompt</a>
+</li>
+<li>
+<a href="#solution-2">Solution</a>
+</li>
+</ul>
+<li>
+<a href="#part-2">Part 2</a>
+</li>
+<ul>
+<li>
+<a href="#prompt-3">Prompt</a>
+</li>
+<li>
+<a href="#example-output-2">Example Output</a>
+</li>
+<li>
+<a href="#solution-3">Solution</a>
+</li>
+<li>
+<a href="#recursion">Recursion</a>
+</li>
+<ul>
+<li>
+<a href="#tail-call-optimization">Tail Call Optimization</a>
+</li>
+</ul>
+<li>
+<a href="#rcpp">Rcpp</a>
+</li>
+<li>
+<a href="#benchmark-1">Benchmark</a>
+</li>
+<li>
+<a href="#python">Python</a>
+</li>
+</ul>
+<li>
+<a href="#part-2-bonus">Part 2 Bonus</a>
+</li>
+<ul>
+<li>
+<a href="#solution-4">Solution</a>
+</li>
+</ul>
+<li>
+<a href="#part-2-bonus-2">Part 2 Bonus 2</a>
+</li>
+<ul>
+<li>
+<a href="#solution-5">Solution</a>
+</li>
+<ul>
+<li>
+<a href="#python-1">Python</a>
+</li>
+</ul>
+</ul>
+<li>
+<a href="#conclusion">Conclusion</a>
+</li>
+</ul>
+<p><em><small>Generated with <a href="https://github.com/pegeler/tocgen" class="external-link">tocgen</a></small></em></p>
+</div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -143,20 +284,30 @@ performance.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>To play along at home, install the package with the following. You
+will need build tools to do so.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"pegeler/dailyprogrammer/366-word-funnel-r-pkg"</span><span class="op">)</span></span></code></pre></div>
+<p>We also need to load a few libraries.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pegeler/dailyprogrammer" class="external-link">funnel</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org" class="external-link">testthat</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="part-1">Part 1<a class="anchor" aria-label="anchor" href="#part-1"></a>
 </h2>
+<div class="section level3">
+<h3 id="prompt">Prompt<a class="anchor" aria-label="anchor" href="#prompt"></a>
+</h3>
 <blockquote>
 <p>Given two strings of letters, determine whether the second can be
 made from the first by removing one letter. The remaining letters must
 stay in the same order.</p>
 </blockquote>
+</div>
 <div class="section level3">
-<h3 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+<h3 id="example-output">Example Output<a class="anchor" aria-label="anchor" href="#example-output"></a>
 </h3>
 <pre><code>funnel("leave", "eave") =&gt; true
 funnel("reset", "rest") =&gt; true
@@ -202,7 +353,7 @@ automatically convert a single-element R character vector into the C++
 standard library’s string type <code>std::string</code>. From there, we
 can access each element of each string using the <code>[]</code>
 operator to do our comparisons.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="dt">bool</span> cpp_funnel<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>a<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>b<span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="dt">bool</span> cpp_funnel<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>a<span class="op">,</span> <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>b<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="dt">size_t</span> b_len <span class="op">=</span> b<span class="op">.</span>size<span class="op">();</span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>a<span class="op">.</span>size<span class="op">()</span> <span class="op">!=</span> b_len <span class="op">+</span> <span class="dv">1</span><span class="op">)</span> <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span></span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
@@ -242,7 +393,8 @@ to modify. We can put the following tests in the file and then run
 is especially useful for TDD enthusiasts to incorporate unit testing
 into their project development work.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"R funnel works"</span>, <span class="op">{</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that</a></span><span class="op">(</span><span class="st">"R funnel works"</span>, <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/funnel.html">r_funnel</a></span><span class="op">(</span><span class="st">"leave"</span>, <span class="st">"eave"</span><span class="op">)</span>     <span class="op">|&gt;</span> <span class="fu"><a href="https://testthat.r-lib.org/reference/logical-expectations.html" class="external-link">expect_true</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/funnel.html">r_funnel</a></span><span class="op">(</span><span class="st">"reset"</span>, <span class="st">"rest"</span><span class="op">)</span>     <span class="op">|&gt;</span> <span class="fu"><a href="https://testthat.r-lib.org/reference/logical-expectations.html" class="external-link">expect_true</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/funnel.html">r_funnel</a></span><span class="op">(</span><span class="st">"dragoon"</span>, <span class="st">"dragon"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://testthat.r-lib.org/reference/logical-expectations.html" class="external-link">expect_true</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -312,9 +464,9 @@ exhaustive search over a large dataset).</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
 <span><span class="co">#&gt;   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>r_funnel(\"sleet\", \"lets\")<span style="color: #949494;">"</span>    11.5µs  12.7µs    <span style="text-decoration: underline;">73</span>947.        0B     22.2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>cpp_funnel(\"sleet\", \"lets\")<span style="color: #949494;">"</span>   776ns   822ns  1<span style="text-decoration: underline;">079</span>235.    2.49KB      0</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                       <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>r_funnel(\"sleet\", \"lets\")<span style="color: #949494;">"</span>    9.74µs  12.1µs    <span style="text-decoration: underline;">74</span>282.        0B     22.3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>cpp_funnel(\"sleet\", \"lets\"… 748.09ns 816.1ns   <span style="text-decoration: underline;">973</span>600.    2.49KB      0</span></span>
 <span></span>
 <span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/funnel.html">r_funnel</a></span><span class="op">(</span><span class="st">"dragoon"</span>, <span class="st">"dragon"</span><span class="op">)</span>,</span>
@@ -323,21 +475,25 @@ exhaustive search over a large dataset).</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
 <span><span class="co">#&gt;   expression                             min median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>r_funnel(\"dragoon\", \"dragon\"…  14.4µs   16µs    <span style="text-decoration: underline;">58</span>063.        0B     29.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>cpp_funnel(\"dragoon\", \"dragon… 773.1ns  814ns  1<span style="text-decoration: underline;">092</span>043.        0B      0</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>r_funnel(\"dragoon\", \"dragon\"…  12.1µs   15µs    <span style="text-decoration: underline;">59</span>605.        0B     23.9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>cpp_funnel(\"dragoon\", \"dragon…   766ns  841ns  1<span style="text-decoration: underline;">042</span>288.        0B      0</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="part-1-bonus-1">Part 1 Bonus 1<a class="anchor" aria-label="anchor" href="#part-1-bonus-1"></a>
 </h2>
+<div class="section level3">
+<h3 id="prompt-1">Prompt<a class="anchor" aria-label="anchor" href="#prompt-1"></a>
+</h3>
 <blockquote>
 <p>Given a string, find all words from the <a href="https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt" class="external-link">enable1
 word list</a> that can be made by removing one letter from the string.
 If there are two possible letters you can remove to make the same word,
 only count it once. Ordering of the output words doesn’t matter.</p>
 </blockquote>
+</div>
 <div class="section level3">
-<h3 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a>
+<h3 id="example-output-1">Example Output<a class="anchor" aria-label="anchor" href="#example-output-1"></a>
 </h3>
 <pre><code>bonus("dragoon") =&gt; ["dragon"]
 bonus("boats") =&gt; ["oats", "bats", "bots", "boas", "boat"]
@@ -403,6 +559,9 @@ on looking at the solution directly and understand what each component
 is doing first. The R package system is doing a lot here in hiding
 complexity and supporting good documentation practice, which makes our
 2-line solution possible.</p>
+<div class="section level4">
+<h4 id="roxygen-comments">Roxygen Comments<a class="anchor" aria-label="anchor" href="#roxygen-comments"></a>
+</h4>
 <p>The first thing you might notice is that the comments above the
 function use the <code>#'</code> syntax. These comments are special.
 They are <a href="https://CRAN.R-project.org/package=roxygen2" class="external-link">Roxygen</a> comments,
@@ -417,6 +576,13 @@ obvious: <code>search_func</code>. Fortunately, there is a
 cross-reference to another manpage and an example to provide clarity.
 Again, using a package-oriented project compendium has enhanced our
 experience when working with potentially complex code.</p>
+<p>NB, All public objects (and some private ones) have Roxygen comments.
+I am only showing them once in this document for illustrative
+purposes.</p>
+</div>
+<div class="section level4">
+<h4 id="support-functions">Support Functions<a class="anchor" aria-label="anchor" href="#support-functions"></a>
+</h4>
 <p>The next thing you might notice is that there are several supporting
 functions built into this package. We already mentioned
 <code>search_func</code>, which has its own manpage and is part of the
@@ -429,7 +595,11 @@ of abstraction</strong> when solving your problem. <em>I. e.</em>,
 you’re not bogged down solving sub-problems that distract from the main
 problem.</p>
 <p>NB, These supporting functions are getting unit tests too!</p>
-<p>Now, let’s look at the solution. The first line is this:</p>
+</div>
+<div class="section level4">
+<h4 id="back-to-the-solution">Back to the Solution<a class="anchor" aria-label="anchor" href="#back-to-the-solution"></a>
+</h4>
+<p>The first line is this:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">candidates</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -456,9 +626,11 @@ only words found by <code>search_func</code>:</p>
 <code class="sourceCode R"><span><span class="va">candidates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">candidates</span>, <span class="va">search_func</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>So in our “cats” example, only “cat” would be returned because the
 other three candidates are not real words.</p>
-<div class="section level4">
-<h4 id="search-algorithms">Search Algorithms<a class="anchor" aria-label="anchor" href="#search-algorithms"></a>
-</h4>
+</div>
+</div>
+<div class="section level3">
+<h3 id="search-algorithms">Search Algorithms<a class="anchor" aria-label="anchor" href="#search-algorithms"></a>
+</h3>
 <p>But what is <code>search_func</code>? Why didn’t we just use R’s
 builtin <code>%in%</code> operator instead? Why go through the
 trouble?</p>
@@ -473,17 +645,14 @@ of the <code>enable1</code> vector. Worst case, that’s
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>172823</mn><mo>=</mo><mn>691292</mn></mrow><annotation encoding="application/x-tex">4 \times 172823 = 691292</annotation></semantics></math>
 comparisons.</p>
 <p>How can we reduce the number of comparisons?</p>
+<div class="section level4">
+<h4 id="binary-search">Binary Search<a class="anchor" aria-label="anchor" href="#binary-search"></a>
+</h4>
 <p>Since we know that <code>enable1</code> is sorted (or can be
 “trivially”), we could use a binary search. That would reduce the number
 of comparisons per candidate by log2, which means 18 comparisons worst
 case. This package contains a <code><a href="../reference/search_func.html">binary_search()</a></code> function
 implemented in pure R to demonstrate that.</p>
-<p>The implementation for the binary search function is below. Note that
-it is a function that returns a function. This is a closure. The reason
-we are doing this is because we want to prep our input table (make sure
-it’s sorted). By returning a closure, we have our own private version of
-the enable1 dataset that we <strong>know</strong> is sorted because we
-sorted it in advance.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">binary_search</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">table</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">table</span><span class="op">)</span></span>
@@ -506,11 +675,20 @@ sorted it in advance.</p>
 <span>    <span class="va">word</span> <span class="op">==</span> <span class="va">table</span><span class="op">[</span><span class="va">lb</span><span class="op">]</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<p>Note that it is a function that returns a function. This is a
+closure. The reason we are doing this is because we want to prep our
+input table (make sure it’s sorted). By returning a closure, we have our
+own private version of the enable1 dataset that we <strong>know</strong>
+is sorted because we sorted it in advance.</p>
 <p>It may be that the performance is acceptable and we can end here. By
 using the right algorithm, we could have obviated the need to use some
 exotic Rcpp data structure. But let’s confirm that. Two data structures
 may be of interest here since they can test membership with a single
 comparison (on average): hashmaps and sets.</p>
+</div>
+<div class="section level4">
+<h4 id="hash-table">Hash Table<a class="anchor" aria-label="anchor" href="#hash-table"></a>
+</h4>
 <p>As of R 4.2.0, there is a builtin <code><a href="https://rdrr.io/r/utils/hashtab.html" class="external-link">hashtab()</a></code> function
 that allows us to work with hashmaps right in R without needing to use
 the C++ STL. This package has implemented that search function with
@@ -521,6 +699,10 @@ the C++ STL. This package has implemented that search function with
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">e</span> <span class="kw">in</span> <span class="va">table</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/hashtab.html" class="external-link">sethash</a></span><span class="op">(</span><span class="va">h</span>, <span class="va">e</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">word</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/hashtab.html" class="external-link">gethash</a></span><span class="op">(</span><span class="va">h</span>, <span class="va">word</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="set">Set<a class="anchor" aria-label="anchor" href="#set"></a>
+</h4>
 <p>There is no builtin set data type in R. So for the
 <code><a href="../reference/search_func.html">set_search()</a></code> function, we will need to enlist Rcpp. In this
 case, we will create a C++
@@ -547,9 +729,10 @@ and that they must create it first and then remember to pass it into
 that would need to be communicated in the documentation but would not
 add much to solving the primary problem of testing for membership in a
 set.</p>
-<div class="section level5">
-<h5 id="benchmark">Benchmark<a class="anchor" aria-label="anchor" href="#benchmark"></a>
-</h5>
+</div>
+<div class="section level4">
+<h4 id="benchmark">Benchmark<a class="anchor" aria-label="anchor" href="#benchmark"></a>
+</h4>
 <p>Now that we’ve covered the theory(?) of the various benefits of each
 search function, let’s confirm our intuition with a benchmark.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -569,10 +752,10 @@ search function, let’s confirm our intuition with a benchmark.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
 <span><span class="co">#&gt;   expression                         min   median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", seq_s)<span style="color: #949494;">"</span>    4.54ms   6.06ms      162.    5.29MB    24.8 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", bin_s)<span style="color: #949494;">"</span>  119.04µs 127.78µs     <span style="text-decoration: underline;">7</span>060.        0B     8.69</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", hash_s)<span style="color: #949494;">"</span>  28.66µs   30.5µs    <span style="text-decoration: underline;">31</span>126.    2.69KB    12.5 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", set_s)<span style="color: #949494;">"</span>   29.12µs  31.06µs    <span style="text-decoration: underline;">29</span>945.    2.38KB     8.99</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", seq_s)<span style="color: #949494;">"</span>    2.71ms   2.93ms      320.    5.29MB    47.5 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", bin_s)<span style="color: #949494;">"</span>  100.18µs 110.07µs     <span style="text-decoration: underline;">8</span>041.        0B    11.9 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", hash_s)<span style="color: #949494;">"</span>  24.91µs  27.53µs    <span style="text-decoration: underline;">34</span>090.    2.69KB    10.2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">"</span>pt1_bonus(\"cats\", set_s)<span style="color: #949494;">"</span>   25.06µs  27.98µs    <span style="text-decoration: underline;">32</span>908.    2.38KB     9.88</span></span></code></pre></div>
 <p>The binary search was 45 times faster than the naive linear search,
 and both the set and hashmap were about 200x faster. It may come as a
 surprise that the hashmap is comparable to the much more complicated set
@@ -586,19 +769,22 @@ necessary. In fact, for many cases, the pure R binary search solution
 may be fast enough. However, if one had to do an exhaustive search of
 the all 173k words of the enable1 list, performance matters. It could be
 the difference between hours and seconds of runtime.</p>
-</div>
+<p>Which is a great segue into our next challenge.</p>
 </div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="part-1-bonus-2">Part 1 Bonus 2<a class="anchor" aria-label="anchor" href="#part-1-bonus-2"></a>
 </h2>
-<p>Which is a great segue into our next challenge.</p>
+<div class="section level3">
+<h3 id="prompt-2">Prompt<a class="anchor" aria-label="anchor" href="#prompt-2"></a>
+</h3>
 <blockquote>
 <p>Given an input word from enable1, the largest number of words that
 can be returned from <code>bonus(word)</code> is 5. One such input is
 “boats”. There are 28 such inputs in total. Find them all.</p>
 </blockquote>
+</div>
 <div class="section level3">
 <h3 id="solution-2">Solution<a class="anchor" aria-label="anchor" href="#solution-2"></a>
 </h3>
@@ -619,6 +805,9 @@ sufficiently quickly as is. It’s about 17s on my laptop.</p>
 <div class="section level2">
 <h2 id="part-2">Part 2<a class="anchor" aria-label="anchor" href="#part-2"></a>
 </h2>
+<div class="section level3">
+<h3 id="prompt-3">Prompt<a class="anchor" aria-label="anchor" href="#prompt-3"></a>
+</h3>
 <blockquote>
 <p>A <em>word funnel</em> is a series of words formed by removing one
 letter at a time from a starting word, keeping the remaining letters in
@@ -630,8 +819,9 @@ Given a word, determine the length of the longest word funnel that it
 starts. You may optionally also return the funnel itself (or any funnel
 tied for the longest, in the case of a tie).
 </blockquote>
+</div>
 <div class="section level3">
-<h3 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a>
+<h3 id="example-output-2">Example Output<a class="anchor" aria-label="anchor" href="#example-output-2"></a>
 </h3>
 <pre><code>funnel2("gnash") =&gt; 4
 funnel2("princesses") =&gt; 9
@@ -668,39 +858,61 @@ signature, the user specifies the root word and the search function to
 be used. However, the inner function (<code>loop()</code> or
 <code>go()</code> by convention) needs only to know the current word to
 be tested and the current depth in the tree.</p>
+<div class="section level4">
+<h4 id="tail-call-optimization">Tail Call Optimization<a class="anchor" aria-label="anchor" href="#tail-call-optimization"></a>
+</h4>
+<p>One pitfall of recursive algorithms is the potential for stack
+overflows when traversing too deeply into branches. That will not be an
+issue here because we can expect a shallow depth; but it is something to
+be aware of, especially when you’d like to implement an infinite loop
+using recursion. There is an R function which prevents stack overflows
+by doing tail call optimization (<a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/Tailcall.html" class="external-link"><code>Tailcall()</code></a>).
+The recursive function needs to meet certain conditions and this
+particular function would not be a candidate. But it’s a good tool to
+keep in your back pocket.</p>
+<p>I have an example of <code><a href="https://rdrr.io/r/base/Tailcall.html" class="external-link">Tailcall()</a></code> usage in my <a href="https://github.com/pegeler/conway/blob/346dd7e6535de3cd7c54a999d3e9454a377e5854/life/R/life.r#L42" class="external-link">Conway’s
+Game of Life package</a> as an example of where this would come in handy
+for creating infinite loops.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="rcpp">Rcpp<a class="anchor" aria-label="anchor" href="#rcpp"></a>
 </h3>
-<p>The Rcpp solution look similar but without the functional elements. I
-tend to prefer the R version but acknowledge it may be excessively
+<p>The Rcpp solution looks similar but without the functional elements.
+I tend to prefer the R version but acknowledge it may be excessively
 terse.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> make_all_funnel_words<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>s<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>s<span class="op">.</span>size<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">2</span><span class="op">)</span></span>
-<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">{};</span></span>
-<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> set<span class="op">(</span>s<span class="op">.</span>size<span class="op">());</span></span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> len <span class="op">=</span> s<span class="op">.</span>size<span class="op">();</span> i <span class="op">&lt;</span> len<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>    set<span class="op">.</span>insert<span class="op">(</span>s<span class="op">.</span>substr<span class="op">(</span><span class="dv">0</span><span class="op">,</span> i<span class="op">)</span> <span class="op">+</span> s<span class="op">.</span>substr<span class="op">(</span>i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> len <span class="op">-</span> i<span class="op">));</span></span>
-<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a></span>
-<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>  <span class="cf">return</span> set<span class="op">;</span></span>
-<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="dt">int</span> cpp_funnel2<span class="op">(</span></span>
-<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>x<span class="op">,</span></span>
-<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset</span>
-<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a>  <span class="dt">int</span> depth <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>s <span class="op">:</span> make_all_funnel_words<span class="op">(</span>x<span class="op">))</span></span>
-<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>wordset<span class="op">-&gt;</span>count<span class="op">(</span>s<span class="op">)</span> <span class="op">==</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a>      depth <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>depth<span class="op">,</span> cpp_funnel2<span class="op">(</span>s<span class="op">,</span> wordset<span class="op">)</span> <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a>  <span class="cf">return</span> depth<span class="op">;</span></span>
-<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="dt">int</span> cpp_funnel2<span class="op">(</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>x<span class="op">,</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="dt">int</span> depth <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>s <span class="op">:</span> make_all_funnel_words<span class="op">(</span>x<span class="op">))</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>wordset<span class="op">-&gt;</span>count<span class="op">(</span>s<span class="op">)</span> <span class="op">==</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>      depth <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>depth<span class="op">,</span> cpp_funnel2<span class="op">(</span>s<span class="op">,</span> wordset<span class="op">)</span> <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>  <span class="cf">return</span> depth<span class="op">;</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Note too that I opted to make a support function
+<code>make_all_funnel_words()</code> to keep the function body from
+getting too cluttered.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> make_all_funnel_words<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>s<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>s<span class="op">.</span>size<span class="op">()</span> <span class="op">&lt;</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">{};</span></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>  <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> set<span class="op">(</span>s<span class="op">.</span>size<span class="op">());</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> len <span class="op">=</span> s<span class="op">.</span>size<span class="op">();</span> i <span class="op">&lt;</span> len<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>    set<span class="op">.</span>insert<span class="op">(</span>s<span class="op">.</span>substr<span class="op">(</span><span class="dv">0</span><span class="op">,</span> i<span class="op">)</span> <span class="op">+</span> s<span class="op">.</span>substr<span class="op">(</span>i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> len <span class="op">-</span> i<span class="op">));</span></span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>  <span class="cf">return</span> set<span class="op">;</span></span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="benchmark-1">Benchmark<a class="anchor" aria-label="anchor" href="#benchmark-1"></a>
+</h3>
 <p>The benchmark shows about an 84x speed difference between the two,
 which would make Rcpp the preferred choice if we were to do another
 exhaustive search exercise.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">word_set</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initialize_set.html">initialize_set</a></span><span class="op">(</span><span class="va">enable1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="http://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span></span>
@@ -708,34 +920,45 @@ exhaustive search exercise.</p>
 <span>  <span class="fu"><a href="../reference/funnel2.html">cpp_funnel2</a></span><span class="op">(</span><span class="st">"princesses"</span>, <span class="va">word_set</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
-<span><span class="co">#&gt;   expression                             min median `itr/sec` mem_alloc `gc/sec`</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>r_funnel2(\"princesses\", hash_s…  1.35ms  1.4ms      693.    7.23KB     8.83</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>cpp_funnel2(\"princesses\", word… 22.95µs 23.4µs    <span style="text-decoration: underline;">39</span>047.    2.38KB     3.91</span></span></code></pre></div>
+<span><span class="co">#&gt;   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">"</span>r_funnel2(\"princesses\", hash_…  1.16ms  1.31ms      728.    7.23KB     11.2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">"</span>cpp_funnel2(\"princesses\", wor… 18.93µs 19.82µs    <span style="text-decoration: underline;">46</span>096.    2.38KB      0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="python">Python<a class="anchor" aria-label="anchor" href="#python"></a>
 </h3>
-<p>For comparison’s sake, I originally solved this challenge in Python.
-Here it is:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="kw">def</span> funnel2(word):</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>    max_depth <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>    candidates <span class="op">=</span> {word[:i] <span class="op">+</span> word[(i<span class="op">+</span><span class="dv">1</span>):] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(word))} <span class="op">&amp;</span> WORDS</span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>    <span class="cf">for</span> candidate <span class="kw">in</span> candidates:</span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>        max_depth <span class="op">=</span> <span class="bu">max</span>(funnel2(candidate) <span class="op">+</span> <span class="dv">1</span>, max_depth)</span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>    <span class="cf">return</span> max_depth</span></code></pre></div>
+<p>For comparison’s sake, we’ll look at the Python solution I originally
+made</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="kw">def</span> funnel2(word):</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>    max_depth <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>    candidates <span class="op">=</span> {word[:i] <span class="op">+</span> word[(i<span class="op">+</span><span class="dv">1</span>):] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(word))} <span class="op">&amp;</span> WORDS</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>    <span class="cf">for</span> candidate <span class="kw">in</span> candidates:</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>        max_depth <span class="op">=</span> <span class="bu">max</span>(funnel2(candidate) <span class="op">+</span> <span class="dv">1</span>, max_depth)</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>    <span class="cf">return</span> max_depth</span></code></pre></div>
 <p>It looks very similar to the C++ version. But due to string slicing
 and the set intersection operator, I did not need to create the
 <code>make_all_funnel_words()</code> support function.</p>
+<p>There might be some room for optimization here as well. Although the
+set intersection operator <code>&amp;</code> offers a succinct syntax
+here, I’d want to examine its impact on algorithmic complexity—it could
+be that there is a more efficient way to remove invalid words at that
+step (such as using an <code>if</code> condition in the set
+comprehension). But I found this to be sufficiently fast at the time, so
+it is worth the trade-off for simplicity of implementation.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="part-2-bonus">Part 2 Bonus<a class="anchor" aria-label="anchor" href="#part-2-bonus"></a>
 </h2>
+<div class="section level3">
+<h3 id="prompt-4">Prompt<a class="anchor" aria-label="anchor" href="#prompt-4"></a>
+</h3>
 <blockquote>
 <p>Find the one word in the word list that starts a funnel of length
 10.</p>
 </blockquote>
+</div>
 <div class="section level3">
 <h3 id="solution-4">Solution<a class="anchor" aria-label="anchor" href="#solution-4"></a>
 </h3>
@@ -743,7 +966,7 @@ and the set intersection operator, I did not need to create the
 is a for loop instead of vectorized. I did not write it in C++ because
 the loop will iterate few enough times that it won’t really matter (I
 suspect). I <em>did</em> use the C++ funnel function though.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt2_bonus</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">words</span>, <span class="va">wordset</span><span class="op">)</span></span>
 <span>    <span class="kw">for</span> <span class="op">(</span><span class="va">word</span> <span class="kw">in</span> <span class="va">words</span><span class="op">)</span></span>
 <span>      <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">word</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">10L</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="../reference/funnel2.html">cpp_funnel2</a></span><span class="op">(</span><span class="va">word</span>, <span class="va">wordset</span><span class="op">)</span> <span class="op">==</span> <span class="fl">10L</span><span class="op">)</span></span>
@@ -753,6 +976,9 @@ suspect). I <em>did</em> use the C++ funnel function though.</p>
 <div class="section level2">
 <h2 id="part-2-bonus-2">Part 2 Bonus 2<a class="anchor" aria-label="anchor" href="#part-2-bonus-2"></a>
 </h2>
+<div class="section level3">
+<h3 id="prompt-5">Prompt<a class="anchor" aria-label="anchor" href="#prompt-5"></a>
+</h3>
 <blockquote>
 <p>For this bonus, you are allowed to remove more than one letter in a
 single step of the word funnel. For instance, you may step from
@@ -774,53 +1000,54 @@ at</code></pre>
 <code>preformationists</code> is one of six words that begin a modified
 funnel of length 12. Find the other five words.
 </blockquote>
+</div>
 <div class="section level3">
 <h3 id="solution-5">Solution<a class="anchor" aria-label="anchor" href="#solution-5"></a>
 </h3>
 <p>Because multiple deletions can happen at each step, we need to make a
 new supporting function to generate candidate words.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> make_all_funnel_words_any_depth<span class="op">(</span></span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>s<span class="op">,</span></span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset<span class="op">,</span></span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  <span class="dt">int</span> depth</span>
-<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>  <span class="dt">int</span> word_len <span class="op">=</span> s<span class="op">.</span>size<span class="op">()</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> <span class="kw">final</span><span class="op">;</span></span>
-<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a>  <span class="kw">auto</span> prev <span class="op">=</span> make_all_funnel_words<span class="op">(</span>s<span class="op">);</span></span>
-<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a>  <span class="kw">auto</span> pred <span class="op">=</span> <span class="op">[</span>wordset<span class="op">](</span><span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>str<span class="op">){</span><span class="cf">return</span> wordset<span class="op">-&gt;</span>count<span class="op">(</span>str<span class="op">)</span> <span class="op">==</span> <span class="dv">1</span><span class="op">;};</span></span>
-<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a></span>
-<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a>  <span class="cf">while</span> <span class="op">(</span>word_len <span class="op">&gt;</span> <span class="dv">1</span> <span class="op">&amp;&amp;</span> depth <span class="op">+</span> word_len <span class="op">&gt;</span> <span class="dv">10</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a>    <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> curr<span class="op">(--</span>word_len<span class="op">);</span></span>
-<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>word <span class="op">:</span> prev<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a>      <span class="kw">auto</span> tmp <span class="op">=</span> make_all_funnel_words<span class="op">(</span>word<span class="op">);</span></span>
-<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a>      <span class="bu">std::</span>move<span class="op">(</span>tmp<span class="op">.</span>begin<span class="op">(),</span> tmp<span class="op">.</span>end<span class="op">(),</span> <span class="bu">std::</span>inserter<span class="op">(</span>curr<span class="op">,</span> curr<span class="op">.</span>end<span class="op">()));</span></span>
-<span id="cb29-16"><a href="#cb29-16" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb29-17"><a href="#cb29-17" tabindex="-1"></a>    <span class="bu">std::</span>copy_if<span class="op">(</span>prev<span class="op">.</span>begin<span class="op">(),</span> prev<span class="op">.</span>end<span class="op">(),</span> <span class="bu">std::</span>back_inserter<span class="op">(</span><span class="kw">final</span><span class="op">),</span> pred<span class="op">);</span></span>
-<span id="cb29-18"><a href="#cb29-18" tabindex="-1"></a>    prev <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>curr<span class="op">);</span></span>
-<span id="cb29-19"><a href="#cb29-19" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb29-20"><a href="#cb29-20" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">final</span><span class="op">;</span></span>
-<span id="cb29-21"><a href="#cb29-21" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> make_all_funnel_words_any_depth<span class="op">(</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>s<span class="op">,</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset<span class="op">,</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="dt">int</span> depth</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>  <span class="dt">int</span> word_len <span class="op">=</span> s<span class="op">.</span>size<span class="op">()</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> <span class="kw">final</span><span class="op">;</span></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>  <span class="kw">auto</span> prev <span class="op">=</span> make_all_funnel_words<span class="op">(</span>s<span class="op">);</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>  <span class="kw">auto</span> pred <span class="op">=</span> <span class="op">[</span>wordset<span class="op">](</span><span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>str<span class="op">){</span><span class="cf">return</span> wordset<span class="op">-&gt;</span>count<span class="op">(</span>str<span class="op">)</span> <span class="op">==</span> <span class="dv">1</span><span class="op">;};</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>  <span class="cf">while</span> <span class="op">(</span>word_len <span class="op">&gt;</span> <span class="dv">1</span> <span class="op">&amp;&amp;</span> depth <span class="op">+</span> word_len <span class="op">&gt;</span> <span class="dv">10</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>    <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> curr<span class="op">(--</span>word_len<span class="op">);</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>word <span class="op">:</span> prev<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>      <span class="kw">auto</span> tmp <span class="op">=</span> make_all_funnel_words<span class="op">(</span>word<span class="op">);</span></span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>      <span class="bu">std::</span>move<span class="op">(</span>tmp<span class="op">.</span>begin<span class="op">(),</span> tmp<span class="op">.</span>end<span class="op">(),</span> <span class="bu">std::</span>inserter<span class="op">(</span>curr<span class="op">,</span> curr<span class="op">.</span>end<span class="op">()));</span></span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a>    <span class="bu">std::</span>copy_if<span class="op">(</span>prev<span class="op">.</span>begin<span class="op">(),</span> prev<span class="op">.</span>end<span class="op">(),</span> <span class="bu">std::</span>back_inserter<span class="op">(</span><span class="kw">final</span><span class="op">),</span> pred<span class="op">);</span></span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a>    prev <span class="op">=</span> <span class="bu">std::</span>move<span class="op">(</span>curr<span class="op">);</span></span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">final</span><span class="op">;</span></span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Now, we use recursion almost exactly as we did in
 <code><a href="../reference/funnel2.html">cpp_funnel2()</a></code>. One difference is that I have created a
 wrapper function to simplify the signature and do the final integer
 comparison to determine if the depth was 12.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="dt">int</span> pt2_bonus2_loop<span class="op">(</span></span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>x<span class="op">,</span></span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset<span class="op">,</span></span>
-<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>    <span class="dt">int</span> depth <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>  <span class="dt">int</span> max_depth <span class="op">=</span> depth<span class="op">;</span></span>
-<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>word <span class="op">:</span> make_all_funnel_words_any_depth<span class="op">(</span>x<span class="op">,</span> wordset<span class="op">,</span> depth<span class="op">))</span></span>
-<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>    max_depth <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>max_depth<span class="op">,</span> pt2_bonus2_loop<span class="op">(</span>word<span class="op">,</span> wordset<span class="op">,</span> depth <span class="op">+</span> <span class="dv">1</span><span class="op">));</span></span>
-<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>  <span class="cf">return</span> max_depth<span class="op">;</span></span>
-<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a></span>
-<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a><span class="dt">bool</span> pt2_bonus2<span class="op">(</span></span>
-<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string <span class="op">&amp;</span>x<span class="op">,</span></span>
-<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset</span>
-<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>  <span class="cf">return</span> pt2_bonus2_loop<span class="op">(</span>x<span class="op">,</span> wordset<span class="op">)</span> <span class="op">==</span> <span class="dv">12</span><span class="op">;</span></span>
-<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="dt">int</span> pt2_bonus2_loop<span class="op">(</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>x<span class="op">,</span></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset<span class="op">,</span></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>    <span class="dt">int</span> depth <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>  <span class="dt">int</span> max_depth <span class="op">=</span> depth<span class="op">;</span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>word <span class="op">:</span> make_all_funnel_words_any_depth<span class="op">(</span>x<span class="op">,</span> wordset<span class="op">,</span> depth<span class="op">))</span></span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>    max_depth <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>max_depth<span class="op">,</span> pt2_bonus2_loop<span class="op">(</span>word<span class="op">,</span> wordset<span class="op">,</span> depth <span class="op">+</span> <span class="dv">1</span><span class="op">));</span></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>  <span class="cf">return</span> max_depth<span class="op">;</span></span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="dt">bool</span> pt2_bonus2<span class="op">(</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>x<span class="op">,</span></span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset</span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a>  <span class="cf">return</span> pt2_bonus2_loop<span class="op">(</span>x<span class="op">,</span> wordset<span class="op">)</span> <span class="op">==</span> <span class="dv">12</span><span class="op">;</span></span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="python-1">Python<a class="anchor" aria-label="anchor" href="#python-1"></a>
 </h4>
@@ -829,47 +1056,69 @@ much easier to write and had a shorter runtime than my C++ solution. The
 ease of writing can be attributed to the <code>itertools</code> library
 (a personal favorite), the rich set API, and string slicing facilities
 in Python.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> combinations</span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="kw">def</span> bonus2(word, depth<span class="op">=</span><span class="dv">1</span>):</span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>    max_depth <span class="op">=</span> depth</span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>    candidates <span class="op">=</span> <span class="bu">set</span>()</span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>    i <span class="op">=</span> <span class="bu">len</span>(word) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>    <span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">1</span> <span class="kw">and</span> i <span class="op">+</span> depth <span class="op">&gt;</span> <span class="dv">10</span>:</span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>        candidates.update(</span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>            {<span class="st">''</span>.join(c) <span class="cf">for</span> c <span class="kw">in</span> combinations(word, i)} <span class="op">&amp;</span> WORDS)</span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>        i <span class="op">-=</span> <span class="dv">1</span></span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a>    <span class="cf">for</span> candidate <span class="kw">in</span> candidates:</span>
-<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>        max_depth <span class="op">=</span> <span class="bu">max</span>(bonus2(candidate, depth <span class="op">+</span> <span class="dv">1</span>), max_depth)</span>
-<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>    <span class="cf">return</span> max_depth</span>
-<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a></span>
-<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a></span>
-<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a><span class="cf">assert</span> bonus2(<span class="st">"preformationists"</span>) <span class="op">==</span> <span class="dv">12</span></span></code></pre></div>
-<p>I was also able to run on several cores since this assignment is
-embarassingly parallel.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="im">import</span> multiprocessing <span class="im">as</span> mp</span>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> combinations</span>
 <span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a></span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="kw">def</span> run_bonus2():</span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a></span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    <span class="kw">def</span> check(word):</span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>        <span class="cf">if</span> bonus2(word) <span class="op">==</span> <span class="dv">12</span>:</span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>            <span class="cf">return</span> word</span>
-<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a></span>
-<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>    found <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>    words <span class="op">=</span> (w <span class="cf">for</span> w <span class="kw">in</span> WORDS <span class="cf">if</span> <span class="bu">len</span>(w) <span class="op">&gt;</span> <span class="dv">12</span>)</span>
-<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a></span>
-<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a>    <span class="cf">with</span> mp.Pool(mp.cpu_count()) <span class="im">as</span> pool:</span>
-<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> pool.imap_unordered(check, words):</span>
-<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a>            <span class="cf">if</span> i <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a>                <span class="bu">print</span>(i)</span>
-<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a>                found <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb32-18"><a href="#cb32-18" tabindex="-1"></a>                <span class="cf">if</span> found <span class="op">==</span> <span class="dv">6</span>:</span>
-<span id="cb32-19"><a href="#cb32-19" tabindex="-1"></a>                    pool.terminate()</span>
-<span id="cb32-20"><a href="#cb32-20" tabindex="-1"></a>                    <span class="cf">break</span></span></code></pre></div>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="kw">def</span> bonus2(word, depth<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>    max_depth <span class="op">=</span> depth</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    candidates <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>    i <span class="op">=</span> <span class="bu">len</span>(word) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>    <span class="cf">while</span> i <span class="op">&gt;</span> <span class="dv">1</span> <span class="kw">and</span> i <span class="op">+</span> depth <span class="op">&gt;</span> <span class="dv">10</span>:</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>        candidates.update(</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>            {<span class="st">''</span>.join(c) <span class="cf">for</span> c <span class="kw">in</span> combinations(word, i)} <span class="op">&amp;</span> WORDS)</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>        i <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>    <span class="cf">for</span> candidate <span class="kw">in</span> candidates:</span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a>        max_depth <span class="op">=</span> <span class="bu">max</span>(bonus2(candidate, depth <span class="op">+</span> <span class="dv">1</span>), max_depth)</span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a>    <span class="cf">return</span> max_depth</span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a><span class="cf">assert</span> bonus2(<span class="st">"preformationists"</span>) <span class="op">==</span> <span class="dv">12</span></span></code></pre></div>
+<p>I was also able to run on several cores since this assignment is
+embarassingly parallel.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="im">import</span> multiprocessing <span class="im">as</span> mp</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="kw">def</span> _check(word):</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>    <span class="cf">if</span> bonus2(word) <span class="op">==</span> <span class="dv">12</span>:</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>        <span class="cf">return</span> word</span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span>  <span class="co"># Explicit for clarity</span></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a><span class="kw">def</span> run_bonus2():</span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>    found <span class="op">=</span> []</span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>    words <span class="op">=</span> (w <span class="cf">for</span> w <span class="kw">in</span> WORDS <span class="cf">if</span> <span class="bu">len</span>(w) <span class="op">&gt;</span> <span class="dv">12</span>)</span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a>    <span class="cf">with</span> mp.Pool(mp.cpu_count()) <span class="im">as</span> pool:</span>
+<span id="cb33-15"><a href="#cb33-15" tabindex="-1"></a>        <span class="cf">for</span> word <span class="kw">in</span> pool.imap_unordered(_check, words):</span>
+<span id="cb33-16"><a href="#cb33-16" tabindex="-1"></a>            <span class="cf">if</span> word <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb33-17"><a href="#cb33-17" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a>            found.append(word)</span>
+<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(found) <span class="op">==</span> <span class="dv">6</span>:</span>
+<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a>                <span class="cf">return</span> found</span></code></pre></div>
 </div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
+</h2>
+<p>Rcpp is a powerful tool for R programmers when speed is important.
+However, exploring algorithmic optimizations and base R functionality
+should not be discounted. Frequently, using Rcpp is unnecessary,
+especially when working in R’s strength domains (numeric computation and
+graphics). Trying several methods and measuring performance on real data
+using benchmarks is an important part of the process when considering
+whether Rcpp is the right tool for a job. Non-technical factors, such as
+intended audience and expected lifetime of the code also play a role in
+the decision on whether to use Rcpp.</p>
+<p>Package-based project compendia augment problem solving in several
+ways. Chief among them is maintaining a desired level of abstraction so
+that the focus always remains on the immediate solution. Compendium
+packages are a shareable unit of distribution that takes full advantage
+of R’s builtin package management system, including dependency
+management, automated unit tests and checks, documentation, write-ups
+(vignettes), external data management, build and compilation tools and
+configuration. Packages also enforce a standardized scaffolding for code
+organization. All of this promotes reproducibility.</p>
 </div>
   </div>
 
