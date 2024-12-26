@@ -15,10 +15,71 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(funnel)
-library(testthat)
-```
+## Table of Contents
+
+<ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#part-1">Part 1</a></li>
+    <ul>
+        <li><a href="#prompt">Prompt</a></li>
+        <li><a href="#example-output">Example Output</a></li>
+        <li><a href="#solution">Solution</a></li>
+        <li><a href="#tests">Tests</a></li>
+        <li><a href="#performance">Performance</a></li>
+    </ul>
+    <li><a href="#part-1-bonus-1">Part 1 Bonus 1</a></li>
+    <ul>
+        <li><a href="#prompt-1">Prompt</a></li>
+        <li><a href="#example-output-1">Example Output</a></li>
+        <li><a href="#external-datasets">External Datasets</a></li>
+        <li><a href="#solution-1">Solution</a></li>
+        <ul>
+            <li><a href="#roxygen-comments">Roxygen Comments</a></li>
+            <li><a href="#support-functions">Support Functions</a></li>
+            <li><a href="#back-to-the-solution">Back to the Solution</a></li>
+        </ul>
+        <li><a href="#search-algorithms">Search Algorithms</a></li>
+        <ul>
+            <li><a href="#binary-search">Binary Search</a></li>
+            <li><a href="#hash-table">Hash Table</a></li>
+            <li><a href="#set">Set</a></li>
+            <li><a href="#benchmark">Benchmark</a></li>
+        </ul>
+    </ul>
+    <li><a href="#part-1-bonus-2">Part 1 Bonus 2</a></li>
+    <ul>
+        <li><a href="#prompt-2">Prompt</a></li>
+        <li><a href="#solution-2">Solution</a></li>
+    </ul>
+    <li><a href="#part-2">Part 2</a></li>
+    <ul>
+        <li><a href="#prompt-3">Prompt</a></li>
+        <li><a href="#example-output-2">Example Output</a></li>
+        <li><a href="#solution-3">Solution</a></li>
+        <li><a href="#recursion">Recursion</a></li>
+        <ul>
+            <li><a href="#tail-call-optimization">Tail Call Optimization</a></li>
+        </ul>
+        <li><a href="#rcpp">Rcpp</a></li>
+        <li><a href="#benchmark-1">Benchmark</a></li>
+        <li><a href="#python">Python</a></li>
+    </ul>
+    <li><a href="#part-2-bonus">Part 2 Bonus</a></li>
+    <ul>
+        <li><a href="#solution-4">Solution</a></li>
+    </ul>
+    <li><a href="#part-2-bonus-2">Part 2 Bonus 2</a></li>
+    <ul>
+        <li><a href="#solution-5">Solution</a></li>
+        <ul>
+            <li><a href="#python-1">Python</a></li>
+        </ul>
+    </ul>
+    <li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<em><small>Generated with [tocgen](https://github.com/pegeler/tocgen)</small></em>
 
 ## Introduction
 
@@ -66,18 +127,30 @@ naive way and a more sophisticated way to compare performance.
 
 ## Installation
 
+To play along at home, install the package with the following. You will need
+build tools to do so.
+
 ```r
 if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
 remotes::install_github("pegeler/dailyprogrammer/366-word-funnel-r-pkg")
 ```
 
+We also need to load a few libraries.
+
+```{r setup}
+library(funnel)
+library(testthat)
+```
+
 ## Part 1
+
+### Prompt
 
 > Given two strings of letters, determine whether the second can be made from
 the first by removing one letter. The remaining letters must stay in the same
 order.
 
-### Examples
+### Example Output
 
 ```
 funnel("leave", "eave") => true
@@ -166,6 +239,7 @@ This is especially useful for TDD enthusiasts to incorporate unit testing into
 their project development work.
 
 ```{r pt1-funnel-tests}
+
 test_that("R funnel works", {
   r_funnel("leave", "eave")     |> expect_true()
   r_funnel("reset", "rest")     |> expect_true()
@@ -243,13 +317,15 @@ bench::mark(
 
 ## Part 1 Bonus 1
 
+### Prompt
+
 > Given a string, find all words from the [enable1 word
 list](https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt)
 that can be made by removing one letter from the string. If there are two
 possible letters you can remove to make the same word, only count it once.
 Ordering of the output words doesn't matter.
 
-### Examples
+### Example Output
 
 ```
 bonus("dragoon") => ["dragon"]
@@ -320,6 +396,8 @@ solution directly and understand what each component is doing first. The R
 package system is doing a lot here in hiding complexity and supporting good
 documentation practice, which makes our 2-line solution possible.
 
+#### Roxygen Comments
+
 The first thing you might notice is that the comments above the function use the
 `#'` syntax. These comments are special. They are
 [Roxygen](https://CRAN.R-project.org/package=roxygen2) comments, which will be
@@ -334,6 +412,11 @@ in this function signature whose purpose is not immediately obvious:
 example to provide clarity. Again, using a package-oriented project compendium
 has enhanced our experience when working with potentially complex code.
 
+NB, All public objects (and some private ones) have Roxygen comments. I am only
+showing them once in this document for illustrative purposes.
+
+#### Support Functions
+
 The next thing you might notice is that there are several supporting functions
 built into this package. We already mentioned `search_func`, which has its own
 manpage and is part of the public API (it's visible to end-users). But there is
@@ -346,7 +429,9 @@ the main problem.
 
 NB, These supporting functions are getting unit tests too!
 
-Now, let's look at the solution. The first line is this:
+#### Back to the Solution
+
+The first line is this:
 
 ```r
 candidates <- x |>
@@ -381,7 +466,7 @@ candidates[vapply(candidates, search_func, logical(1))]
 So in our "cats" example, only "cat" would be returned because the other three
 candidates are not real words.
 
-#### Search Algorithms
+### Search Algorithms
 
 But what is `search_func`? Why didn't we just use R's builtin `%in%` operator
 instead? Why go through the trouble?
@@ -398,16 +483,12 @@ vector. Worst case, that's $4 \times 172823 = 691292$ comparisons.
 
 How can we reduce the number of comparisons?
 
+#### Binary Search
+
 Since we know that `enable1` is sorted (or can be "trivially"), we could use
 a binary search. That would reduce the number of comparisons per candidate by
 log2, which means 18 comparisons worst case. This package contains a
 `binary_search()` function implemented in pure R to demonstrate that.
-
-The implementation for the binary search function is below. Note that it is a
-function that returns a function. This is a closure. The reason we are doing
-this is because we want to prep our input table (make sure it's sorted). By
-returning a closure, we have our own private version of the enable1 dataset that
-we **know** is sorted because we sorted it in advance.
 
 ```r
 binary_search <- function(table) {
@@ -433,11 +514,18 @@ binary_search <- function(table) {
 }
 ```
 
+Note that it is a function that returns a function. This is a closure. The
+reason we are doing this is because we want to prep our input table (make sure
+it's sorted). By returning a closure, we have our own private version of the
+enable1 dataset that we **know** is sorted because we sorted it in advance.
+
 It may be that the performance is acceptable and we can end here. By using the
 right algorithm, we could have obviated the need to use some exotic Rcpp data
 structure. But let's confirm that. Two data structures may be of interest here
 since they can test membership with a single comparison (on average): hashmaps
 and sets.
+
+#### Hash Table
 
 As of R 4.2.0, there is a builtin `hashtab()` function that allows us to work
 with hashmaps right in R without needing to use the C++ STL. This package has
@@ -450,6 +538,8 @@ hashtab_search <- function(table) {
   function(word) gethash(h, word, FALSE)
 }
 ```
+
+#### Set
 
 There is no builtin set data type in R. So for the `set_search()` function, we
 will need to enlist Rcpp. In this case, we will create a C++
@@ -482,7 +572,7 @@ That would be a lot of background knowledge that would need to be communicated
 in the documentation but would not add much to solving the primary problem of
 testing for membership in a set.
 
-##### Benchmark
+#### Benchmark
 
 Now that we've covered the theory(?) of the various benefits of each search
 function, let's confirm our intuition with a benchmark.
@@ -517,9 +607,11 @@ pure R binary search solution may be fast enough. However, if one had to do an
 exhaustive search of the all 173k words of the enable1 list, performance matters.
 It could be the difference between hours and seconds of runtime.
 
+Which is a great segue into our next challenge.
+
 ## Part 1 Bonus 2
 
-Which is a great segue into our next challenge.
+### Prompt
 
 > Given an input word from enable1, the largest number of words that can be
 returned from `bonus(word)` is 5. One such input is "boats". There are 28 such
@@ -544,6 +636,8 @@ pt1_bonus2 <- function(table, search_func) {
 
 ## Part 2
 
+### Prompt
+
 <blockquote>
 A _word funnel_ is a series of words formed by removing one letter at a time
 from a starting word, keeping the remaining letters in order. For the purpose of
@@ -561,7 +655,7 @@ You may optionally also return the funnel itself (or any funnel tied for the
 longest, in the case of a tie).
 </blockquote>
 
-### Examples
+### Example Output
 
 ```
 funnel2("gnash") => 4
@@ -599,10 +693,42 @@ user specifies the root word and the search function to be used. However, the
 inner function (`loop()` or `go()` by convention) needs only to know the current
 word to be tested and the current depth in the tree.
 
+#### Tail Call Optimization
+
+One pitfall of recursive algorithms is the potential for stack overflows when
+traversing too deeply into branches. That will not be an issue here because we
+can expect a shallow depth; but it is something to be aware of, especially when
+you'd like to implement an infinite loop using recursion. There is an R function
+which prevents stack overflows by doing tail call optimization
+([`Tailcall()`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Tailcall.html)).
+The recursive function needs to meet certain conditions and this particular
+function would not be a candidate. But it's a good tool to keep in your back
+pocket.
+
+I have an example of `Tailcall()` usage in my [Conway's Game of Life
+package](https://github.com/pegeler/conway/blob/346dd7e6535de3cd7c54a999d3e9454a377e5854/life/R/life.r#L42)
+as an example of where this would come in handy for creating infinite loops.
+
 ### Rcpp
 
-The Rcpp solution look similar but without the functional elements. I tend to
+The Rcpp solution looks similar but without the functional elements. I tend to
 prefer the R version but acknowledge it may be excessively terse.
+
+```c++
+int cpp_funnel2(
+    const std::string &x,
+    const XPtr<std::unordered_set<std::string>> wordset
+) {
+  int depth = 1;
+  for (const auto &s : make_all_funnel_words(x))
+    if (wordset->count(s) == 1)
+      depth = std::max(depth, cpp_funnel2(s, wordset) + 1);
+  return depth;
+}
+```
+
+Note too that I opted to make a support function `make_all_funnel_words()` to
+keep the function body from getting too cluttered.
 
 ```c++
 std::unordered_set<std::string> make_all_funnel_words(const std::string &s) {
@@ -616,18 +742,9 @@ std::unordered_set<std::string> make_all_funnel_words(const std::string &s) {
 
   return set;
 }
-
-int cpp_funnel2(
-    const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset
-) {
-  int depth = 1;
-  for (const auto &s : make_all_funnel_words(x))
-    if (wordset->count(s) == 1)
-      depth = std::max(depth, cpp_funnel2(s, wordset) + 1);
-  return depth;
-}
 ```
+
+### Benchmark
 
 The benchmark shows about an 84x speed difference between the two, which would
 make Rcpp the preferred choice if we were to do another exhaustive search
@@ -644,7 +761,7 @@ bench::mark(
 
 ### Python
 
-For comparison's sake, I originally solved this challenge in Python. Here it is:
+For comparison's sake, we'll look at the Python solution I originally made
 
 ```python
 def funnel2(word):
@@ -655,11 +772,20 @@ def funnel2(word):
     return max_depth
 ```
 
-It looks very similar to the C++ version. But due to string slicing and the
-set intersection operator, I did not need to create the `make_all_funnel_words()`
+It looks very similar to the C++ version. But due to string slicing and the set
+intersection operator, I did not need to create the `make_all_funnel_words()`
 support function.
 
+There might be some room for optimization here as well. Although the set
+intersection operator `&` offers a succinct syntax here, I'd want to examine its
+impact on algorithmic complexity---it could be that there is a more efficient
+way to remove invalid words at that step (such as using an `if` condition in
+the set comprehension). But I found this to be sufficiently fast at the time,
+so it is worth the trade-off for simplicity of implementation.
+
 ## Part 2 Bonus
+
+### Prompt
 
 > Find the one word in the word list that starts a funnel of length 10.
 
@@ -678,6 +804,8 @@ pt2_bonus <- function(words, wordset)
 ```
 
 ## Part 2 Bonus 2
+
+### Prompt
 
 <blockquote>
 For this bonus, you are allowed to remove more than one letter in a single step
@@ -791,21 +919,41 @@ parallel.
 import multiprocessing as mp
 
 
+def _check(word):
+    if bonus2(word) == 12:
+        return word
+    return None  # Explicit for clarity
+
+
 def run_bonus2():
-
-    def check(word):
-        if bonus2(word) == 12:
-            return word
-
-    found = 0
+    found = []
     words = (w for w in WORDS if len(w) > 12)
 
     with mp.Pool(mp.cpu_count()) as pool:
-        for i in pool.imap_unordered(check, words):
-            if i is not None:
-                print(i)
-                found += 1
-                if found == 6:
-                    pool.terminate()
-                    break
+        for word in pool.imap_unordered(_check, words):
+            if word is None:
+                continue
+            found.append(word)
+            if len(found) == 6:
+                return found
 ```
+
+## Conclusion
+
+Rcpp is a powerful tool for R programmers when speed is important. However,
+exploring algorithmic optimizations and base R functionality should not be
+discounted. Frequently, using Rcpp is unnecessary, especially when working in
+R's strength domains (numeric computation and graphics). Trying several methods
+and measuring performance on real data using benchmarks is an important part of
+the process when considering whether Rcpp is the right tool for a job.
+Non-technical factors, such as intended audience and expected lifetime of the
+code also play a role in the decision on whether to use Rcpp.
+
+Package-based project compendia augment problem solving in several ways. Chief
+among them is maintaining a desired level of abstraction so that the focus
+always remains on the immediate solution. Compendium packages are a shareable
+unit of distribution that takes full advantage of R's builtin package management
+system, including dependency management, automated unit tests and checks,
+documentation, write-ups (vignettes), external data management, build and
+compilation tools and configuration. Packages also enforce a standardized
+scaffolding for code organization. All of this promotes reproducibility.

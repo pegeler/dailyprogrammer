@@ -8,9 +8,7 @@ if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
 remotes::install_github("pegeler/dailyprogrammer/366-word-funnel-r-pkg")
 ```
 
-## [2018-08-20] Challenge #366 [Easy] Word funnel 1
-
-<https://www.reddit.com/r/dailyprogrammer/comments/98ufvz/20180820_challenge_366_easy_word_funnel_1/?st=jmr7nnz4&sh=478ef928>
+## [\[2018-08-20\] Challenge #366 \[Easy\] Word funnel 1](https://www.reddit.com/r/dailyprogrammer/comments/98ufvz/20180820_challenge_366_easy_word_funnel_1/)
 
 ### Challenge
 
@@ -51,9 +49,7 @@ depending on your language and platform of choice - Python will be slower and C
 will be faster. The point is not to hit any specific run time, just to be much
 faster than checking every pair of words.
 
-## [2018-08-22] Challenge #366 [Intermediate] Word funnel 2
-
-<https://www.reddit.com/r/dailyprogrammer/comments/99d24u/20180822_challenge_366_intermediate_word_funnel_2/?st=jmr7busz&sh=001ba1d9>
+## [\[2018-08-22\] Challenge #366 \[Intermediate\] Word funnel 2](https://www.reddit.com/r/dailyprogrammer/comments/99d24u/20180822_challenge_366_intermediate_word_funnel_2/)
 
 ### Challenge
 
