@@ -10,19 +10,18 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache = TRUE
 )
 ```
 
 ```{r setup}
 library(funnel)
-library(testthat)
 ```
-
 
 ## Introduction
 
-This package solves the two of reddit r/dailyprogrammer challenges
+This package solves the two reddit r/dailyprogrammer challenges:
 [word funnel 1](https://www.reddit.com/r/dailyprogrammer/comments/98ufvz/20180820_challenge_366_easy_word_funnel_1/)
 and
 [word funnel 2](https://www.reddit.com/r/dailyprogrammer/comments/99d24u/20180822_challenge_366_intermediate_word_funnel_2/). We will be using them as a pedagogical tool to
@@ -45,8 +44,8 @@ explore advanced R concepts. Concepts include:
 - Data structures and algorithms
     - Comparing the performance of various search algorithms, including linear,
       binary, set membership, and hashmap membership.
-    - Using the C++ standard library to gain access to advanced container types
-      and algorithms not available in base R
+    - Using the C++ standard library to gain access to a variety of container
+      types and algorithms not available in base R
     - Using non-standard R data types
       ([`hashtab()`](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/hashtab.html))
       to improve performance
@@ -63,6 +62,13 @@ package-oriented project compendium and showcase its strengths, while remaining
 simple enough so as not to get lost in project details. The challenges are also
 easy to understand but of sufficient depth that they can be implemented a
 naive way and a more sophisticated way to compare performance.
+
+## Installation
+
+```r
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+remotes::install_github("pegeler/dailyprogrammer/366-word-funnel-r-pkg")
+```
 
 ## Part 1
 
@@ -87,11 +93,11 @@ In the trivial case, we can be assured the result is `FALSE` if the number of
 characters in the second string is not one less than the first. Otherwise, we
 will need to examine each string by indexing into it. In R, we can index into
 a single string in a character vector, but we cannot index into a single
-character into that string. So the approach here will be to split each string
+character in that string. So the approach here will be to split each string
 using `strplit()`. This will likely cause a fairly significant performance hit
 over a language like Python or C++ because it will result in memory allocations
 for two new character vectors (plus a list to contain them). Not to mention the
-overhead for doing the split. This challenge can be fairly simply completed in
+overhead for doing the split. This challenge can be fairly easily completed in
 R but it will not be efficient.
 
 ```r
@@ -138,18 +144,28 @@ bool cpp_funnel(const std::string &a, const std::string &b) {
 }
 ```
 
+Adding an Rcpp function to this project was very quick using
+`usethis::use_rcpp("funnel")`. It automatically set up quite a bit of the
+necessary Rcpp infrastructure in my project and provided some additional
+instructions. From there, it's almost as simple as just writing the code and
+then calling it in R. There are a few extra steps about exporting the functions
+you intend to use in your R session or make available to the public API, but
+those are outside of the scope of this conversation.
+
 ### Tests
 
-This is the first instance where we demonstrate an advantage of using a
+This is the first instance where we demonstrate an advantage of using
 package-oriented project compendia. We can include automated tests to ensure
 that our functions are performing as expected and run those tests with the
 touch of a button. Assuming our project is already set up as a package, running
 `usethis::use_test("part1")` will set up `testthat` in your project and create
 a new test file for you to modify. We can put the following tests in the file
 and then run <kbd>Ctrl</kbd> + <kbd>Shft</kbd> + <kbd>t</kbd> to run the tests.
+This is especially useful for TDD enthusiasts to incorporate unit testing into
+their project development work.
 
 ```{r pt1-funnel-tests}
-test_that("R funnel works", {
+testthat::test_that("R funnel works", {
   r_funnel("leave", "eave")     |> expect_true()
   r_funnel("reset", "rest")     |> expect_true()
   r_funnel("dragoon", "dragon") |> expect_true()
@@ -158,7 +174,7 @@ test_that("R funnel works", {
   r_funnel("skiff", "ski")      |> expect_false()
 })
 
-test_that("Rcpp funnel works", {
+testthat::test_that("Rcpp funnel works", {
   cpp_funnel("leave", "eave")     |> expect_true()
   cpp_funnel("reset", "rest")     |> expect_true()
   cpp_funnel("dragoon", "dragon") |> expect_true()
@@ -170,9 +186,13 @@ test_that("Rcpp funnel works", {
 
 Yay! Both implementations return expected results for provided example data. 🥳
 
-For more on creating packages, I recommend
+NB, For more on creating packages, I recommend
 [Hadley Wickam's _R Packages_](https://r-pkgs.org/) and the 
 [`usethis` package](cran.r-project.org/package=usethis).
+
+NB, Although I will not explicitly show tests for each subsequent challenge in
+this text, the package does in fact include tests for each example output
+provided in the reddit post.
 
 ### Performance
 
@@ -181,7 +201,7 @@ various reasons why we might not want to get Rcpp involved. For example,
 
 - There is more overhead to get Rcpp set up.
 - The compilation step requires build tools for the target machine, which are
-  not always available by default
+  not always available by default.
 - C++ code is "lower level", which can make it more difficult to reason about
   a problem vs a "higher level" language like R which is designed for being
   expressive in a specific domain.
@@ -194,17 +214,19 @@ bullet. But some places where R might need some help are in string handling,
 recursion and loops (sometimes), and data structures and algorithms.
 
 The disadvantage of needing build tools is minimized when shipping code on
-[CRAN]() since they will compile code to any target that may not have build
-tools pre-installed. Packaging code itself is a strategy for making code more
-shareable.
+[CRAN](https://cran.r-project.org/) since they will compile code to any target
+that may not have build tools pre-installed. Packaging code is itself a strategy
+for making code more shareable.
 
 This challenge is a string handling problem, which was selected especially
-because it can be one of R's weaker performance domains. We might expect a
+because it can be one of R's weaker performance domains. (As we'll see a little
+later, this challenge has several features that play well to R's weaknesses,
+which makes it an overall excellent candidate for using Rcpp.) We might expect a
 significant difference in performance when benchmarking, and indeed we see a ~16
 fold speed gain using C++. This could be very significant if this function is
 expected to be used frequently, such as in a package meant for wide distribution
 or if it needs to be used inside a tight loop (for example as part of an
-exhaustive search algorithm).
+exhaustive search over a large dataset).
 
 ```{r pt1-funnel-benchmark}
 bench::mark(
@@ -218,4 +240,571 @@ bench::mark(
 )
 ```
 
-[enable1 word set](https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt)
+## Part 1 Bonus 1
+
+> Given a string, find all words from the [enable1 word
+list](https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt)
+that can be made by removing one letter from the string. If there are two
+possible letters you can remove to make the same word, only count it once.
+Ordering of the output words doesn't matter.
+
+### Examples
+
+```
+bonus("dragoon") => ["dragon"]
+bonus("boats") => ["oats", "bats", "bots", "boas", "boat"]
+bonus("affidavit") => []
+```
+
+### External Datasets
+
+Before we get to the solution, note that the challenge now references an
+external dataset. The `enable1` word list is a ~173k element word list hosted on
+Github.
+
+Since we will be referencing this data frequently, it would be ergonomic to read
+the data in as an R object and then incorporate it into our project in a
+serialized format. This is yet another advantage of using a package-oriented
+project compendium approach. Datasets can be associated with a package and
+accessed using the `data()` function. This pattern also supports
+reproducibility, such as reproducible research.
+
+With `usethis::use_data_raw("enable1")`, an R script file is created in the
+project's _data-raw/_ folder. We will run this once and then evermore will be
+able to load the `enable1` word list simply by executing `data("enable1")`.
+
+```r
+# Contents of data-raw/enable1.R
+enable1_url <- 'https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt'
+enable1 <- readLines(enable1_url)
+usethis::use_data(enable1, overwrite = TRUE)
+```
+
+### Solution
+
+Here is the solution. There is only an R version.
+
+```r
+#' Part 1 Bonus Question
+#'
+#' Create a list of all funnel words that exist in a dictionary.
+#'
+#' @param x The word used to create funnel words.
+#' @param search_func A function to check to see if a candidate word is in the
+#'    a dictionary.
+#' @seealso [search_func]
+#' @examples
+#' \dontrun{
+#' data(enable1)
+#' set_search_function <- set_search(enable1)
+#' pt1_bonus("dragoon", set_search_function)
+#' }
+#' @export
+pt1_bonus <- function(x, search_func) {
+  # First create all candidate words that would fit the rule
+  candidates <- x |>
+    nchar() |>
+    seq_len() |>
+    vapply(remove_letter, character(1), strsplit(x, character(0L))[[1]]) |>
+    unique()
+
+  # Subset legal words based on candidates
+  candidates[vapply(candidates, search_func, logical(1))]
+}
+```
+
+Whoa! There's a lot going on here! The solution itself is only about 2 lines of
+(dense) code. But what's all this other stuff? Let's hold off on looking at the
+solution directly and understand what each component is doing first. The R
+package system is doing a lot here in hiding complexity and supporting good
+documentation practice, which makes our 2-line solution possible.
+
+The first thing you might notice is that the comments above the function use the
+`#'` syntax. These comments are special. They are
+[Roxygen](https://CRAN.R-project.org/package=roxygen2) comments, which will be
+compiled into package help files. When this package is loaded and installed, the
+help file can be accessed using `?pt1_bonus` just as you would look up any other
+manual page (manpage) in R. They are the single best way to document functions
+in R.
+
+The Roxygen comments are particularly helpful here because we have a parameter
+in this function signature whose purpose is not immediately obvious:
+`search_func`. Fortunately, there is a cross-reference to another manpage and an
+example to provide clarity. Again, using a package-oriented project compendium
+has enhanced our experience when working with potentially complex code.
+
+The next thing you might notice is that there are several supporting functions
+built into this package. We already mentioned `search_func`, which has its own
+manpage and is part of the public API (it's visible to end-users). But there is
+also a `remove_letter()` function buried in the body of the function definition.
+This is a utility function that is only visible from within the package! These
+sorts of functions can be effective in hiding away an implementation detail
+so that you can **maintain the proper level of abstraction** when solving your
+problem. _I. e._, you're not bogged down solving sub-problems that distract from
+the main problem.
+
+NB, These supporting functions are getting unit tests too!
+
+Now, let's look at the solution. The first line is this:
+
+```r
+candidates <- x |>
+  nchar() |>
+  seq_len() |>
+  vapply(remove_letter, character(1), strsplit(x, character(0L))[[1]]) |>
+  unique()
+```
+
+It's using the pipe operator to pass the result of each expression into the
+next expression in a readable way. This pipeline is,
+
+1. starting with our target word
+1. getting the number of characters in that word
+1. creating a sequence `1:nchar(x)`
+1. removing one character of the original target word for each index
+1. removing duplicates
+
+For example, if `x` were "cats", the pipeline would generate:
+
+```
+"ats" "cts" "cas" "cat"
+```
+
+The next line returns a subset of the candidate words. Specifically, only words
+found by `search_func`:
+
+```r
+candidates[vapply(candidates, search_func, logical(1))]
+```
+
+So in our "cats" example, only "cat" would be returned because the other three
+candidates are not real words.
+
+#### Search Algorithms
+
+But what is `search_func`? Why didn't we just use R's builtin `%in%` operator
+instead? Why go through the trouble?
+
+```r
+candidates[candidates %in% enable1]
+```
+
+The short answer is that the `enable1` dataset is big! Using `%in%` would be
+prohibitively slow if we had to run a lot of these (foreshadowing). The `%in%`
+operator uses a linear search algorithm, meaning that each member of the
+`candidates` vector would have to be compared to each member of the `enable1`
+vector. Worst case, that's $4 \times 172823 = 691292$ comparisons.
+
+How can we reduce the number of comparisons?
+
+Since we know that `enable1` is sorted (or can be "trivially"), we could use
+a binary search. That would reduce the number of comparisons per candidate by
+log2, which means 18 comparisons worst case. This package contains a
+`binary_search()` function implemented in pure R to demonstrate that.
+
+The implementation for the binary search function is below. Note that it is a
+function that returns a function. This is a closure. The reason we are doing
+this is because we want to prep our input table (make sure it's sorted). By
+returning a closure, we have our own private version of the enable1 dataset that
+we **know** is sorted because we sorted it in advance.
+
+```r
+binary_search <- function(table) {
+  table <- sort(table)
+  function(word) {
+    lb <- 1L
+    ub <- length(table)
+
+    while (lb != ub) {
+      mid <- sum(c(ub, lb) - 1L) %/% 2L + 1L
+      # message("lb: ", lb, ", ub: ", ub, ", mid: ", mid)
+      if (word == table[mid]) {
+        return(TRUE)
+      } else if (word > table[mid]) {
+        lb <- mid + 1L
+      } else {
+        ub <- mid - 1L
+      }
+    }
+
+    word == table[lb]
+  }
+}
+```
+
+It may be that the performance is acceptable and we can end here. By using the
+right algorithm, we could have obviated the need to use some exotic Rcpp data
+structure. But let's confirm that. Two data structures may be of interest here
+since they can test membership with a single comparison (on average): hashmaps
+and sets.
+
+As of R 4.2.0, there is a builtin `hashtab()` function that allows us to work
+with hashmaps right in R without needing to use the C++ STL. This package has
+implemented that search function with `hashtab_search()`.
+
+```r
+hashtab_search <- function(table) {
+  h <- hashtab(size = length(table))
+  for (e in table) sethash(h, e, TRUE)
+  function(word) gethash(h, word, FALSE)
+}
+```
+
+There is no builtin set data type in R. So for the `set_search()` function, we
+will need to enlist Rcpp. In this case, we will create a C++
+`std::unordered_set<std::string>` and pass it around by wrapping it in an
+`Rcpp::Xptr`.
+
+```c++
+XPtr<std::unordered_set<std::string>> initialize_set(const std::vector<std::string> &s) {
+  std::unordered_set<std::string>* uset =
+    new std::unordered_set<std::string>(s.begin(), s.end());
+  XPtr<std::unordered_set<std::string>> xptr(uset, true);
+  return xptr;
+}
+```
+
+The search function itself is quite simple.
+
+```r
+set_search <- function(table) {
+  table <- initialize_set(table)
+  function(word) set_contains(word, table)
+}
+```
+
+This is another advantage of using closures: we can hide the gory details of
+creating an `Xptr`. Now, `set_contains()` can remain a private function (in
+Rcpp), and we don't have to explain to the end-user what this `Xptr` is and that
+they must create it first and then remember to pass it into `set_contains()`.
+That would be a lot of background knowledge that would need to be communicated
+in the documentation but would not add much to solving the primary problem of
+testing for membership in a set.
+
+##### Benchmark
+
+Now that we've covered the theory(?) of the various benefits of each search
+function, let's confirm our intuition with a benchmark.
+
+```{r search-benchmark}
+data(enable1)
+
+seq_s <- sequential_search(enable1)
+bin_s <- binary_search(enable1)
+hash_s <- hashtab_search(enable1)
+set_s <- set_search(enable1)
+
+bench::mark(
+  pt1_bonus("cats", seq_s),
+  pt1_bonus("cats", bin_s),
+  pt1_bonus("cats", hash_s),
+  pt1_bonus("cats", set_s)
+)
+```
+
+The binary search was 45 times faster than the naive linear search, and both the
+set and hashmap were about 200x faster. It may come as a surprise that the
+hashmap is comparable to the much more complicated set implementation. For the
+same performance, we can use an R builtin and save the trouble of all that extra
+complication from Rcpp. However, the `hashtab()` function is relatively new and
+still in the experimental phase; it is possible that a set may have still been
+necessary, depending on the target environment.
+
+This is another reminder that
+Rcpp is a powerful tool but not always necessary. In fact, for many cases, the
+pure R binary search solution may be fast enough. However, if one had to do an
+exhaustive search of the all 173k words of the enable1 list, performance matters.
+It could be the difference between hours and seconds of runtime.
+
+## Part 1 Bonus 2
+
+Which is a great segue into our next challenge.
+
+> Given an input word from enable1, the largest number of words that can be
+returned from `bonus(word)` is 5. One such input is "boats". There are 28 such
+inputs in total. Find them all.
+
+### Solution
+
+With a good foundation built from the previous challenge, this is
+straightforward. The solution subsets the enable1 database to include only words
+with 5 characters or more but otherwise we do no tricks. There are some
+micro-optimizations that could be attempted but this runs sufficiently quickly
+as is. It's about 17s on my laptop.
+
+```r
+pt1_bonus2 <- function(search_func) {
+  qualifying_words <- enable1[nchar(enable1) >= 5L]
+  candidates <- lapply(qualifying_words, pt1_bonus, search_func)
+  matches <- lengths(candidates) == 5L
+  qualifying_words[matches]
+}
+```
+
+## Part 2
+
+<blockquote>
+A _word funnel_ is a series of words formed by removing one letter at a time
+from a starting word, keeping the remaining letters in order. For the purpose of
+this challenge, a word is defined as an entry in the enable1 word list. An
+example of a word funnel is:
+
+```
+gnash => gash => ash => ah
+```
+
+This word funnel has length 4, because there are 4 words in it.
+
+Given a word, determine the length of the longest word funnel that it starts.
+You may optionally also return the funnel itself (or any funnel tied for the
+longest, in the case of a tie).
+</blockquote>
+
+### Examples
+
+```
+funnel2("gnash") => 4
+funnel2("princesses") => 9
+funnel2("turntables") => 5
+funnel2("implosive") => 1
+funnel2("programmer") => 2
+```
+
+### Solution
+
+```r
+r_funnel2 <- function(x, search_func) {
+  loop <- function(x, depth = 1L)
+    x |>
+      pt1_bonus(search_func) |>
+      vapply(loop, integer(1), depth = depth + 1L) |>
+      max(depth)
+  loop(x)
+}
+```
+
+Each of these solutions build on each other. As you can see, we are using
+`pt1_bonus()` to get all valid funnel words for each step.
+
+### Recursion
+
+The new concept to note here is the use of recursion. Since we need to step into
+each possible branch of the funnel to see which is the longest, recursion is a
+natural choice to solve the problem concisely.
+
+Recursive functions often have a wrapper around them so that the function
+signatures are more friendly to the user. In the outer function signature, the
+user specifies the root word and the search function to be used. However, the
+inner function (`loop()` or `go()` by convention) needs only to know the current
+word to be tested and the current depth in the tree.
+
+### Rcpp
+
+The Rcpp solution look similar but without the functional elements. I tend to
+prefer the R version but acknowledge it may be excessively pithy.
+
+```c++
+std::unordered_set<std::string> make_all_funnel_words(const std::string &s) {
+  if (s.size() < 2)
+    return {};
+
+  std::unordered_set<std::string> set(s.size());
+  for (size_t i = 0, len = s.size(); i < len; i++) {
+    set.insert(s.substr(0, i) + s.substr(i + 1, len - i));
+  }
+
+  return set;
+}
+
+int cpp_funnel2(
+    const std::string &x,
+    const XPtr<std::unordered_set<std::string>> wordset
+) {
+  int depth = 1;
+  for (const auto &s : make_all_funnel_words(x))
+    if (wordset->count(s) == 1)
+      depth = std::max(depth, cpp_funnel2(s, wordset) + 1);
+  return depth;
+}
+```
+
+The benchmark shows about an 84x speed difference between the two, which would
+make Rcpp the preferred choice if we were to do another exhaustive search
+exercise.
+
+```{r pt2-funnel-benchmark}
+word_set <- initialize_set(enable1)
+
+bench::mark(
+  r_funnel2("princesses", hash_s),
+  cpp_funnel2("princesses", word_set)
+)
+```
+
+### Python
+
+For comparison's sake, I originally solved this challenge in Python. Here it is:
+
+```python
+def funnel2(word):
+    max_depth = 1
+    candidates = {word[:i] + word[(i+1):] for i in range(len(word))} & WORDS
+    for candidate in candidates:
+        max_depth = max(funnel2(candidate) + 1, max_depth)
+    return max_depth
+```
+
+It looks very similar to the C++ version. But due to string slicing and the
+set intersection operator, I did not need to create the `make_all_funnel_words()`
+support function.
+
+## Part 2 Bonus
+
+> Find the one word in the word list that starts a funnel of length 10.
+
+### Solution
+
+Not too much to note here. The early exit matters, which is why this is a for
+loop instead of vectorized. I did not write it in C++ because the loop will
+iterate few enough times that it won't really matter (I suspect). I _did_ use
+the C++ funnel function though.
+
+```r
+pt2_bonus <- function(words, wordset)
+    for (word in words)
+      if (nchar(word) > 10L && cpp_funnel2(word, wordset) == 10L)
+        return(word)
+```
+
+## Part 2 Bonus 2
+
+<blockquote>
+For this bonus, you are allowed to remove more than one letter in a single step
+of the word funnel. For instance, you may step from `sideboard` to `sidebar` by
+removing the `o` and the final `d` in a single step. With this modified rule,
+it's possible to get a funnel of length 12:
+
+```
+preformationists =>
+preformationist =>
+preformations =>
+reformations =>
+reformation =>
+formation =>
+oration =>
+ration =>
+ratio =>
+rato =>
+rat =>
+at
+```
+
+`preformationists` is one of six words that begin a modified funnel of length
+12. Find the other five words.
+</blockquote>
+
+### Solution
+
+Because multiple deletions can happen at each step, we need to make a new
+supporting function to generate candidate words.
+
+```c++
+std::vector<std::string> make_all_funnel_words_any_depth(
+  const std::string &s,
+  const XPtr<std::unordered_set<std::string>> wordset,
+  int depth
+) {
+  int word_len = s.size() - 1;
+  std::vector<std::string> final;
+  auto prev = make_all_funnel_words(s);
+  auto pred = [wordset](const std::string &str){return wordset->count(str) == 1;};
+
+  while (word_len > 1 && depth + word_len > 10) {
+    std::unordered_set<std::string> curr(--word_len);
+    for (const auto &word : prev) {
+      auto tmp = make_all_funnel_words(word);
+      std::move(tmp.begin(), tmp.end(), std::inserter(curr, curr.end()));
+    }
+    std::copy_if(prev.begin(), prev.end(), std::back_inserter(final), pred);
+    prev = std::move(curr);
+  }
+  return final;
+}
+```
+
+Now, we use recursion almost exactly as we did in `cpp_funnel2()`. One
+difference is that I have created a wrapper function to simplify the signature
+and do the final integer comparison to determine if the depth was 12.
+
+```c++
+int pt2_bonus2_loop(
+    const std::string &x,
+    const XPtr<std::unordered_set<std::string>> wordset,
+    int depth = 1
+) {
+  int max_depth = depth;
+  for (const auto &word : make_all_funnel_words_any_depth(x, wordset, depth))
+    max_depth = std::max(max_depth, pt2_bonus2_loop(word, wordset, depth + 1));
+  return max_depth;
+}
+
+bool pt2_bonus2(
+    const std::string &x,
+    const XPtr<std::unordered_set<std::string>> wordset
+) {
+  return pt2_bonus2_loop(x, wordset) == 12;
+}
+```
+
+#### Python
+
+I also solved this bonus in Python a long time ago. I find it was much easier to
+write and had a shorter runtime than my C++ solution. The ease of writing can be
+attributed to the `itertools` library (a personal favorite), the rich set API,
+and string slicing facilities in Python.
+
+```python
+from itertools import combinations
+
+
+def bonus2(word, depth=1):
+    max_depth = depth
+    candidates = set()
+    i = len(word) - 1
+    while i > 1 and i + depth > 10:
+        candidates.update(
+            {''.join(c) for c in combinations(word, i)} & WORDS)
+        i -= 1
+    for candidate in candidates:
+        max_depth = max(bonus2(candidate, depth + 1), max_depth)
+    return max_depth
+
+
+assert bonus2("preformationists") == 12
+```
+
+I was also able to run on several cores since this assignment is embarassingly
+parallel.
+
+```python
+import multiprocessing as mp
+
+
+def run_bonus2():
+
+    def check(word):
+        if bonus2(word) == 12:
+            return word
+
+    found = 0
+    words = (w for w in WORDS if len(w) > 12)
+
+    with mp.Pool(mp.cpu_count()) as pool:
+        for i in pool.imap_unordered(check, words):
+            if i is not None:
+                print(i)
+                found += 1
+                if found == 6:
+                    pool.terminate()
+                    break
+```

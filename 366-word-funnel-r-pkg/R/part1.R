@@ -28,6 +28,13 @@ r_funnel <- function(a, b) {
 #' @param x The word used to create funnel words.
 #' @param search_func A function to check to see if a candidate word is in the
 #'    a dictionary.
+#' @seealso [search_func]
+#' @examples
+#' \dontrun{
+#' data(enable1)
+#' set_search_function <- set_search(enable1)
+#' pt1_bonus("dragoon", set_search_function)
+#' }
 #' @export
 pt1_bonus <- function(x, search_func) {
   # First create all candidate words that would fit the rule
