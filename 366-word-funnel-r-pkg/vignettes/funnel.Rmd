@@ -234,7 +234,7 @@ that our functions are performing as expected and run those tests with the
 touch of a button. Assuming our project is already set up as a package, running
 `usethis::use_test("part1")` will set up `testthat` in your project and create
 a new test file for you to modify. We can put the following tests in the file
-and then run <kbd>Ctrl</kbd> + <kbd>Shft</kbd> + <kbd>t</kbd> to run the tests.
+and then run <kbd>Ctrl</kbd> + <kbd>Shft</kbd> + <kbd>T</kbd> to run the tests.
 This is especially useful for TDD enthusiasts to incorporate unit testing into
 their project development work.
 
@@ -761,7 +761,7 @@ bench::mark(
 
 ### Python
 
-For comparison's sake, we'll look at the Python solution I originally made
+For comparison's sake, we'll look at the Python solution I originally made.
 
 ```python
 def funnel2(word):
