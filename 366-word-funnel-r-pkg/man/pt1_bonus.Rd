@@ -2,7 +2,7 @@
 % Please edit documentation in R/part1.R
 \name{pt1_bonus}
 \alias{pt1_bonus}
-\title{Part 1 Bonus Question}
+\title{Part 1 Bonus}
 \usage{
 pt1_bonus(x, search_func)
 }

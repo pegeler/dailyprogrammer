@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(funnel)
+library(testthat)
 ```
 
 ## Introduction
@@ -165,7 +166,7 @@ This is especially useful for TDD enthusiasts to incorporate unit testing into
 their project development work.
 
 ```{r pt1-funnel-tests}
-testthat::test_that("R funnel works", {
+test_that("R funnel works", {
   r_funnel("leave", "eave")     |> expect_true()
   r_funnel("reset", "rest")     |> expect_true()
   r_funnel("dragoon", "dragon") |> expect_true()
@@ -174,7 +175,7 @@ testthat::test_that("R funnel works", {
   r_funnel("skiff", "ski")      |> expect_false()
 })
 
-testthat::test_that("Rcpp funnel works", {
+test_that("Rcpp funnel works", {
   cpp_funnel("leave", "eave")     |> expect_true()
   cpp_funnel("reset", "rest")     |> expect_true()
   cpp_funnel("dragoon", "dragon") |> expect_true()
@@ -601,7 +602,7 @@ word to be tested and the current depth in the tree.
 ### Rcpp
 
 The Rcpp solution look similar but without the functional elements. I tend to
-prefer the R version but acknowledge it may be excessively pithy.
+prefer the R version but acknowledge it may be excessively terse.
 
 ```c++
 std::unordered_set<std::string> make_all_funnel_words(const std::string &s) {

@@ -1,4 +1,4 @@
-#' Part 1 Word funnel
+#' Part 1 Word Funnel
 #' @param a The base word
 #' @param b The candidate word
 #' @returns A logical indicating if `a` can go into `b`
@@ -21,7 +21,7 @@ r_funnel <- function(a, b) {
   )
 }
 
-#' Part 1 Bonus Question
+#' Part 1 Bonus
 #'
 #' Create a list of all funnel words that exist in a dictionary.
 #'

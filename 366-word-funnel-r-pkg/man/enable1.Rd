@@ -3,7 +3,7 @@
 \docType{data}
 \name{enable1}
 \alias{enable1}
-\title{The enable1 word list}
+\title{The enable1 Word List}
 \format{
 An object of class \code{character} of length 172823.
 }
@@ -14,6 +14,6 @@ An object of class \code{character} of length 172823.
 enable1
 }
 \description{
-The enable1 word list
+The enable1 Word List
 }
 \keyword{datasets}

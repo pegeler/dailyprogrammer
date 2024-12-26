@@ -27,7 +27,7 @@ pt2_bonus2 <- function(x, wordset) {
     .Call(`_funnel_pt2_bonus2`, x, wordset)
 }
 
-#' Create an external pointer to a C++ unordered set
+#' Create an External Pointer to a C++ Unordered Set
 #'
 #' @param s The character vector to be used in the set.
 #' @export

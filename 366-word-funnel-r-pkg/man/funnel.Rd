@@ -4,7 +4,7 @@
 \alias{cpp_funnel}
 \alias{funnel}
 \alias{r_funnel}
-\title{Part 1 Word funnel}
+\title{Part 1 Word Funnel}
 \usage{
 cpp_funnel(a, b)
 
@@ -19,5 +19,5 @@ r_funnel(a, b)
 A logical indicating if \code{a} can go into \code{b}
 }
 \description{
-Part 1 Word funnel
+Part 1 Word Funnel
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{initialize_set}
 \alias{initialize_set}
-\title{Create an external pointer to a C++ unordered set}
+\title{Create an External Pointer to a C++ Unordered Set}
 \usage{
 initialize_set(s)
 }
@@ -10,5 +10,5 @@ initialize_set(s)
 \item{s}{The character vector to be used in the set.}
 }
 \description{
-Create an external pointer to a C++ unordered set
+Create an External Pointer to a C++ Unordered Set
 }
