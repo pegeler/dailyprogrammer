@@ -41,6 +41,9 @@ set_search <- function(table) {
 }
 
 #' @rdname search_func
+#' @importFrom utils hashtab
+#' @importFrom utils gethash
+#' @importFrom utils sethash
 #' @export
 hashtab_search <- function(table) {
   h <- hashtab(size = length(table))

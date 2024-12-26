@@ -2,7 +2,7 @@
 title: "Solving a word funnel programming challenge"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{funnel}
+  %\VignetteIndexEntry{Solving a word funnel programming challenge}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -533,8 +533,8 @@ micro-optimizations that could be attempted but this runs sufficiently quickly
 as is. It's about 17s on my laptop.
 
 ```r
-pt1_bonus2 <- function(search_func) {
-  qualifying_words <- enable1[nchar(enable1) >= 5L]
+pt1_bonus2 <- function(table, search_func) {
+  qualifying_words <- table[nchar(table) >= 5L]
   candidates <- lapply(qualifying_words, pt1_bonus, search_func)
   matches <- lengths(candidates) == 5L
   qualifying_words[matches]

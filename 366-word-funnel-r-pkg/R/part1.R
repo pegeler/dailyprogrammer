@@ -52,11 +52,12 @@ pt1_bonus <- function(x, search_func) {
 #'
 #' Find all words in the `enable1` dictionary that contains 5 legal funnel words.
 #'
+#' @param table A character vector of dictionary words. (I. e., `enable1`)
 #' @param search_func A function to check to see if a candidate word is in the
 #'    a dictionary.
 #' @export
-pt1_bonus2 <- function(search_func) {
-  qualifying_words <- enable1[nchar(enable1) >= 5L]
+pt1_bonus2 <- function(table, search_func) {
+  qualifying_words <- table[nchar(table) >= 5L]
   candidates <- lapply(qualifying_words, pt1_bonus, search_func)
   matches <- lengths(candidates) == 5L
   qualifying_words[matches]

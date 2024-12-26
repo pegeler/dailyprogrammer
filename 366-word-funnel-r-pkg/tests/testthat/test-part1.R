@@ -30,11 +30,12 @@ test_that("Bonus works", {
 })
 
 test_that("Bonus 2 works", {
+  set_s <- set_search(enable1)
   rubric <- c(
     "boats", "moats", "peats", "teats", "beasts", "brands", "chards",
     "charts", "clamps", "coasts", "cramps", "grains", "shoots", "skites",
     "spates", "spicks", "spikes", "spines", "tramps", "writes", "yearns",
     "drivers", "plaints", "waivers", "grippers", "rousters", "grabblers",
     "twanglers")
-  enable1 |> set_search() |> pt1_bonus2() |> setequal(rubric) |> expect_true()
+  enable1 |> pt1_bonus2(set_s) |> setequal(rubric) |> expect_true()
 })
