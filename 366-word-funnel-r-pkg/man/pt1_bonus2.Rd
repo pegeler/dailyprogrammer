@@ -4,9 +4,11 @@
 \alias{pt1_bonus2}
 \title{Part 1 Bonus 2}
 \usage{
-pt1_bonus2(search_func)
+pt1_bonus2(table, search_func)
 }
 \arguments{
+\item{table}{A character vector of dictionary words. (I. e., \code{enable1})}
+
 \item{search_func}{A function to check to see if a candidate word is in the
 a dictionary.}
 }

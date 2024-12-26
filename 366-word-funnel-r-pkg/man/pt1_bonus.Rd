@@ -15,3 +15,13 @@ a dictionary.}
 \description{
 Create a list of all funnel words that exist in a dictionary.
 }
+\examples{
+\dontrun{
+data(enable1)
+set_search_function <- set_search(enable1)
+pt1_bonus("dragoon", set_search_function)
+}
+}
+\seealso{
+\link{search_func}
+}

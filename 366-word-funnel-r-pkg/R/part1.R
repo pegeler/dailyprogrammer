@@ -28,6 +28,13 @@ r_funnel <- function(a, b) {
 #' @param x The word used to create funnel words.
 #' @param search_func A function to check to see if a candidate word is in the
 #'    a dictionary.
+#' @seealso [search_func]
+#' @examples
+#' \dontrun{
+#' data(enable1)
+#' set_search_function <- set_search(enable1)
+#' pt1_bonus("dragoon", set_search_function)
+#' }
 #' @export
 pt1_bonus <- function(x, search_func) {
   # First create all candidate words that would fit the rule
@@ -45,11 +52,12 @@ pt1_bonus <- function(x, search_func) {
 #'
 #' Find all words in the `enable1` dictionary that contains 5 legal funnel words.
 #'
+#' @param table A character vector of dictionary words. (I. e., `enable1`)
 #' @param search_func A function to check to see if a candidate word is in the
 #'    a dictionary.
 #' @export
-pt1_bonus2 <- function(search_func) {
-  qualifying_words <- enable1[nchar(enable1) >= 5L]
+pt1_bonus2 <- function(table, search_func) {
+  qualifying_words <- table[nchar(table) >= 5L]
   candidates <- lapply(qualifying_words, pt1_bonus, search_func)
   matches <- lengths(candidates) == 5L
   qualifying_words[matches]

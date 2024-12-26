@@ -16,8 +16,12 @@ LinkingTo:
 Imports: 
     Rcpp
 Suggests: 
+    bench,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 2
 SystemRequirements: C++17
 URL: https://github.com/pegeler/dailyprogrammer
 BugReports: https://github.com/pegeler/dailyprogrammer/issues
+VignetteBuilder: knitr
