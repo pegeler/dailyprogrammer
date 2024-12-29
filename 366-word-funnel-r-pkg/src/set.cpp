@@ -11,10 +11,9 @@ using namespace Rcpp;
 //' @export
 // [[Rcpp::export]]
 XPtr<std::unordered_set<std::string>> initialize_set(const std::vector<std::string> &s) {
-  std::unordered_set<std::string>* uset =
-    new std::unordered_set<std::string>(s.begin(), s.end());
-  XPtr<std::unordered_set<std::string>> xptr(uset, true);
-  return xptr;
+  using set_t = std::unordered_set<std::string>;
+  set_t *set = new set_t(s.begin(), s.end());
+  return XPtr<set_t>(set, true);
 }
 
 // [[Rcpp::export]]

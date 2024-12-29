@@ -8,10 +8,10 @@ set_s <- set_search(enable1)
 word_set <- initialize_set(enable1)
 
 bench::mark(
-  bonus("boats", seq_s),
-  bonus("boats", bin_s),
-  bonus("boats", hash_s),
-  bonus("boats", set_s)
+  pt1_bonus("boats", seq_s),
+  pt1_bonus("boats", bin_s),
+  pt1_bonus("boats", hash_s),
+  pt1_bonus("boats", set_s)
 )
 
 bench::mark(
