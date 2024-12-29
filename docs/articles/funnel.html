@@ -693,11 +693,10 @@ case, we will create a C++
 <code>std::unordered_set&lt;std::string&gt;</code> and pass it around by
 wrapping it in an <code>Rcpp::Xptr</code>.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> initialize_set<span class="op">(</span><span class="at">const</span> <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> <span class="op">&amp;</span>s<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;*</span> uset <span class="op">=</span></span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;(</span>s<span class="op">.</span>begin<span class="op">(),</span> s<span class="op">.</span>end<span class="op">());</span></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> xptr<span class="op">(</span>uset<span class="op">,</span> <span class="kw">true</span><span class="op">);</span></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="cf">return</span> xptr<span class="op">;</span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="kw">using</span> <span class="dt">set_t</span> <span class="op">=</span> <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;;</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="dt">set_t</span> <span class="op">*</span>set <span class="op">=</span> <span class="kw">new</span> <span class="dt">set_t</span><span class="op">(</span>s<span class="op">.</span>begin<span class="op">(),</span> s<span class="op">.</span>end<span class="op">());</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="cf">return</span> XPtr<span class="op">&lt;</span><span class="dt">set_t</span><span class="op">&gt;(</span>set<span class="op">,</span> <span class="kw">true</span><span class="op">);</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>The search function itself is quite simple.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">set_search</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">table</span><span class="op">)</span> <span class="op">{</span></span>
@@ -867,7 +866,7 @@ I tend to prefer the R version but acknowledge it may be excessively
 terse.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="dt">int</span> cpp_funnel2<span class="op">(</span></span>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>x<span class="op">,</span></span>
-<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> <span class="op">&amp;</span>wordset</span>
 <span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="dt">int</span> depth <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
 <span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>s <span class="op">:</span> make_all_funnel_words<span class="op">(</span>x<span class="op">))</span></span>
@@ -992,7 +991,7 @@ funnel of length 12. Find the other five words.
 new supporting function to generate candidate words.</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> make_all_funnel_words_any_depth<span class="op">(</span></span>
 <span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>s<span class="op">,</span></span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset<span class="op">,</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">const</span> <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> <span class="op">*</span>wordset<span class="op">,</span></span>
 <span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="dt">int</span> depth</span>
 <span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>  <span class="dt">int</span> word_len <span class="op">=</span> s<span class="op">.</span>size<span class="op">()</span> <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
@@ -1017,7 +1016,7 @@ wrapper function to simplify the signature and do the final integer
 comparison to determine if the depth was 12.</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="dt">int</span> pt2_bonus2_loop<span class="op">(</span></span>
 <span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>x<span class="op">,</span></span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset<span class="op">,</span></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;</span> <span class="op">*</span>wordset<span class="op">,</span></span>
 <span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>    <span class="dt">int</span> depth <span class="op">=</span> <span class="dv">1</span></span>
 <span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>  <span class="dt">int</span> max_depth <span class="op">=</span> depth<span class="op">;</span></span>
@@ -1028,9 +1027,9 @@ comparison to determine if the depth was 12.</p>
 <span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a></span>
 <span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="dt">bool</span> pt2_bonus2<span class="op">(</span></span>
 <span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>    <span class="at">const</span> <span class="bu">std::</span>string<span class="op"> &amp;</span>x<span class="op">,</span></span>
-<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> wordset</span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>    <span class="at">const</span> XPtr<span class="op">&lt;</span><span class="bu">std::</span>unordered_set<span class="op">&lt;</span><span class="bu">std::</span>string<span class="op">&gt;&gt;</span> <span class="op">&amp;</span>wordset</span>
 <span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a>  <span class="cf">return</span> pt2_bonus2_loop<span class="op">(</span>x<span class="op">,</span> wordset<span class="op">)</span> <span class="op">==</span> <span class="dv">12</span><span class="op">;</span></span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a>  <span class="cf">return</span> pt2_bonus2_loop<span class="op">(</span>x<span class="op">,</span> wordset<span class="op">.</span>get<span class="op">())</span> <span class="op">==</span> <span class="dv">12</span><span class="op">;</span></span>
 <span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="python-1">Python<a class="anchor" aria-label="anchor" href="#python-1"></a>

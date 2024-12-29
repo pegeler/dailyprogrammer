@@ -548,10 +548,9 @@ will need to enlist Rcpp. In this case, we will create a C++
 
 ```c++
 XPtr<std::unordered_set<std::string>> initialize_set(const std::vector<std::string> &s) {
-  std::unordered_set<std::string>* uset =
-    new std::unordered_set<std::string>(s.begin(), s.end());
-  XPtr<std::unordered_set<std::string>> xptr(uset, true);
-  return xptr;
+  using set_t = std::unordered_set<std::string>;
+  set_t *set = new set_t(s.begin(), s.end());
+  return XPtr<set_t>(set, true);
 }
 ```
 
@@ -717,7 +716,7 @@ prefer the R version but acknowledge it may be excessively terse.
 ```c++
 int cpp_funnel2(
     const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset
+    const XPtr<std::unordered_set<std::string>> &wordset
 ) {
   int depth = 1;
   for (const auto &s : make_all_funnel_words(x))
@@ -840,7 +839,7 @@ supporting function to generate candidate words.
 ```c++
 std::vector<std::string> make_all_funnel_words_any_depth(
   const std::string &s,
-  const XPtr<std::unordered_set<std::string>> wordset,
+  const std::unordered_set<std::string> *wordset,
   int depth
 ) {
   int word_len = s.size() - 1;
@@ -868,7 +867,7 @@ and do the final integer comparison to determine if the depth was 12.
 ```c++
 int pt2_bonus2_loop(
     const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset,
+    const std::unordered_set<std::string> *wordset,
     int depth = 1
 ) {
   int max_depth = depth;
@@ -879,9 +878,9 @@ int pt2_bonus2_loop(
 
 bool pt2_bonus2(
     const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset
+    const XPtr<std::unordered_set<std::string>> &wordset
 ) {
-  return pt2_bonus2_loop(x, wordset) == 12;
+  return pt2_bonus2_loop(x, wordset.get()) == 12;
 }
 ```
 
