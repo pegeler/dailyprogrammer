@@ -32,3 +32,6 @@ bench::mark(
 long_words <- enable1[nchar(enable1) > 12]
 system.time(hits <- vapply(long_words, pt2_bonus2, integer(1L), word_set) == 12L)
 long_words[hits]
+
+
+bench::mark(pt2_bonus2("preformationists", word_set))

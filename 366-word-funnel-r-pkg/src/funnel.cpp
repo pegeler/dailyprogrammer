@@ -48,7 +48,7 @@ std::unordered_set<std::string> make_all_funnel_words(const std::string &s) {
 // [[Rcpp::export]]
 int cpp_funnel2(
     const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset
+    const XPtr<std::unordered_set<std::string>> &wordset
 ) {
   int depth = 1;
   for (const auto &s : make_all_funnel_words(x))
@@ -59,7 +59,7 @@ int cpp_funnel2(
 
 std::vector<std::string> make_all_funnel_words_any_depth(
   const std::string &s,
-  const XPtr<std::unordered_set<std::string>> wordset,
+  const std::unordered_set<std::string> *wordset,
   int depth
 ) {
   int word_len = s.size() - 1;
@@ -81,7 +81,7 @@ std::vector<std::string> make_all_funnel_words_any_depth(
 
 int pt2_bonus2_loop(
     const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset,
+    const std::unordered_set<std::string> *wordset,
     int depth = 1
 ) {
   int max_depth = depth;
@@ -102,9 +102,9 @@ int pt2_bonus2_loop(
 // [[Rcpp::export]]
 bool pt2_bonus2(
     const std::string &x,
-    const XPtr<std::unordered_set<std::string>> wordset
+    const XPtr<std::unordered_set<std::string>> &wordset
 ) {
-  return pt2_bonus2_loop(x, wordset) == 12;
+  return pt2_bonus2_loop(x, wordset.get()) == 12;
 }
 
 /*** R

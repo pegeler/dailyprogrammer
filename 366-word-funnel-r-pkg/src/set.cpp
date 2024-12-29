@@ -18,7 +18,10 @@ XPtr<std::unordered_set<std::string>> initialize_set(const std::vector<std::stri
 }
 
 // [[Rcpp::export]]
-bool set_contains(const std::string &word, XPtr<std::unordered_set<std::string>> table) {
+bool set_contains(
+    const std::string &word,
+    const XPtr<std::unordered_set<std::string>> &table
+) {
   return table->count(word) == 1;
 }
 

@@ -23,25 +23,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_funnel2
-int cpp_funnel2(const std::string& x, const XPtr<std::unordered_set<std::string>> wordset);
+int cpp_funnel2(const std::string& x, const XPtr<std::unordered_set<std::string>>& wordset);
 RcppExport SEXP _funnel_cpp_funnel2(SEXP xSEXP, SEXP wordsetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::string& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const XPtr<std::unordered_set<std::string>> >::type wordset(wordsetSEXP);
+    Rcpp::traits::input_parameter< const XPtr<std::unordered_set<std::string>>& >::type wordset(wordsetSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_funnel2(x, wordset));
     return rcpp_result_gen;
 END_RCPP
 }
 // pt2_bonus2
-bool pt2_bonus2(const std::string& x, const XPtr<std::unordered_set<std::string>> wordset);
+bool pt2_bonus2(const std::string& x, const XPtr<std::unordered_set<std::string>>& wordset);
 RcppExport SEXP _funnel_pt2_bonus2(SEXP xSEXP, SEXP wordsetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::string& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const XPtr<std::unordered_set<std::string>> >::type wordset(wordsetSEXP);
+    Rcpp::traits::input_parameter< const XPtr<std::unordered_set<std::string>>& >::type wordset(wordsetSEXP);
     rcpp_result_gen = Rcpp::wrap(pt2_bonus2(x, wordset));
     return rcpp_result_gen;
 END_RCPP
@@ -58,13 +58,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // set_contains
-bool set_contains(const std::string& word, XPtr<std::unordered_set<std::string>> table);
+bool set_contains(const std::string& word, const XPtr<std::unordered_set<std::string>>& table);
 RcppExport SEXP _funnel_set_contains(SEXP wordSEXP, SEXP tableSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::string& >::type word(wordSEXP);
-    Rcpp::traits::input_parameter< XPtr<std::unordered_set<std::string>> >::type table(tableSEXP);
+    Rcpp::traits::input_parameter< const XPtr<std::unordered_set<std::string>>& >::type table(tableSEXP);
     rcpp_result_gen = Rcpp::wrap(set_contains(word, table));
     return rcpp_result_gen;
 END_RCPP
