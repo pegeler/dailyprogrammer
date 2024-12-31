@@ -1,4 +1,6 @@
 #include <Rcpp.h>
+#include <primes.h>
+
 #include <algorithm>
 #include <iterator>
 #include <string>
@@ -57,6 +59,11 @@ int cpp_funnel2(
   return depth;
 }
 
+static inline size_t get_number_of_buckets(int word_len, size_t prev_size) {
+  IntegerVector expected_size{word_len * static_cast<int>(prev_size)};
+  return primes::next_prime(expected_size * 2).at(0);
+}
+
 std::vector<std::string> make_all_funnel_words_any_depth(
   const std::string &s,
   const std::unordered_set<std::string> *wordset,
@@ -65,10 +72,11 @@ std::vector<std::string> make_all_funnel_words_any_depth(
   int word_len = s.size() - 1;
   std::vector<std::string> final;
   auto prev = make_all_funnel_words(s);
-  auto pred = [wordset](const std::string &str){return wordset->count(str) == 1;};
+  auto pred = [wordset](const std::string &s){return wordset->count(s) == 1;};
 
   while (word_len > 1 && depth + word_len > 10) {
-    std::unordered_set<std::string> curr(--word_len);
+    size_t buckets = get_number_of_buckets(--word_len, prev.size());
+    std::unordered_set<std::string> curr(buckets);
     for (const auto &word : prev) {
       auto tmp = make_all_funnel_words(word);
       std::move(tmp.begin(), tmp.end(), std::inserter(curr, curr.end()));
@@ -104,7 +112,7 @@ bool pt2_bonus2(
     const std::string &x,
     const XPtr<std::unordered_set<std::string>> &wordset
 ) {
-  return pt2_bonus2_loop(x, wordset.get()) == 12;
+  return pt2_bonus2_loop(x, wordset.checked_get()) == 12;
 }
 
 /*** R
