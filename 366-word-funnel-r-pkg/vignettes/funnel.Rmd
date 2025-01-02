@@ -71,10 +71,9 @@ knitr::opts_chunk$set(
     </ul>
     <li><a href="#part-2-bonus-2">Part 2 Bonus 2</a></li>
     <ul>
+        <li><a href="#helper-functions">Helper Functions</a></li>
         <li><a href="#solution-5">Solution</a></li>
-        <ul>
-            <li><a href="#python-1">Python</a></li>
-        </ul>
+        <li><a href="#python-1">Python</a></li>
     </ul>
     <li><a href="#conclusion">Conclusion</a></li>
 </ul>
@@ -831,7 +830,7 @@ at
 12. Find the other five words.
 </blockquote>
 
-### Solution
+### Helper Functions
 
 Because multiple deletions can happen at each step, we need to make a new
 supporting function to generate candidate words.
@@ -845,10 +844,11 @@ std::vector<std::string> make_all_funnel_words_any_depth(
   int word_len = s.size() - 1;
   std::vector<std::string> final;
   auto prev = make_all_funnel_words(s);
-  auto pred = [wordset](const std::string &str){return wordset->count(str) == 1;};
+  auto pred = [wordset](const std::string &s){return wordset->count(s) == 1;};
 
   while (word_len > 1 && depth + word_len > 10) {
-    std::unordered_set<std::string> curr(--word_len);
+    size_t buckets = get_number_of_buckets(--word_len, prev.size());
+    std::unordered_set<std::string> curr(buckets);
     for (const auto &word : prev) {
       auto tmp = make_all_funnel_words(word);
       std::move(tmp.begin(), tmp.end(), std::inserter(curr, curr.end()));
@@ -859,6 +859,29 @@ std::vector<std::string> make_all_funnel_words_any_depth(
   return final;
 }
 ```
+
+This is a very busy function and includes a lot of low-level detail; some of
+which is expected as part of the trade-off made when seeking performance.
+However, it does add a cognitive burden that could be avoided with a higher
+level language such as Python. When exploring the Python solution later on, we
+will also find the hand-coded semi-procedural C++ will work toward our detriment
+in performance (possibly due to poor abstraction or other misthinking).
+
+NB, there is a deeper discussion on technical choices made here in the comments
+of the _funnel.cpp_ source file.
+
+Also note the `get_number_of_buckets()` helper function. I abstracted the logic
+to determine the initial number of buckets in the set into a separate function
+in an effort to declutter.
+
+```c++
+static inline size_t get_number_of_buckets(int word_len, size_t prev_size) {
+  IntegerVector expected_size{word_len * static_cast<int>(prev_size)};
+  return primes::next_prime(expected_size * 2).at(0);
+}
+```
+
+### Solution
 
 Now, we use recursion almost exactly as we did in `cpp_funnel2()`. One
 difference is that I have created a wrapper function to simplify the signature
@@ -884,7 +907,7 @@ bool pt2_bonus2(
 }
 ```
 
-#### Python
+### Python
 
 I also solved this bonus in Python a long time ago. I find it was much easier to
 write and had a shorter runtime than my C++ solution. The ease of writing can be

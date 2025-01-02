@@ -64,6 +64,44 @@ static inline size_t get_number_of_buckets(int word_len, size_t prev_size) {
   return primes::next_prime(expected_size * 2).at(0);
 }
 
+/* The following function is busy and offers poor performance compared to what
+ * we see in the Python version.
+ *
+ * Some of the complexity arises from my attempt at optimization by preventing
+ * unnecessary copying of objects (hence the uses of `std::move()`). We are
+ * shuffling strings into several containers, which can get expensive. Strings
+ * are not trivial to move and copy, so I'm careful to tell the compiler when
+ * I'm done with the contents of a container in hopes it will do the Right Thing
+ * managing memory behind the scenes.
+ *
+ * Also, since C++ does not offer syntax for set operations such as
+ * intersections like we saw in Python, we wait to do the
+ * membership-in-`wordset` test until copying the strings to the final output in
+ * the `std::copy_if()` call. It may have been more natural for us to express
+ * this in a different step of the function or in a different way completely,
+ * but the standard library tools available to us directed us toward this tack
+ * as a path of least resistance. The features of the tools impact the way in
+ * which we solve problems.
+ *
+ * There is an additional burden of creating our own predicate function for the
+ * membership test. Creating a lambda function each time the function is called
+ * is not ideal since we've already essentially written the same function when
+ * we made `set_contains()`. However, the duplication of code is inevitable
+ * because there is probably more overhead computationally and organizationally
+ * to make that function useful here. We'd likely want to partially apply
+ * `set_contains()` using `std::bind()`. This would create a forwarding call
+ * wrapper. We could then pass the resulting callable type into the function
+ * rather than passing in the set pointer used as a capture in an _ad hoc_
+ * lambda generated as a local variable. There is a cost to passing
+ * `std::function` types into functions too, though. The function object would
+ * have to be passed by value rather than by reference in this case. Rather than
+ * passing in a pointer and generating a lambda function, we might want to
+ * create the lambda once and pass it around by reference. This also is not
+ * possible. We can't pass a lambda around by reference when there is a capture.
+ * So we run into a similar problem that we saw when trying to use `std::bind`
+ * on `set_contains()` to generate a `std::function<bool (const std::string&)>`
+ * object.
+*/
 std::vector<std::string> make_all_funnel_words_any_depth(
   const std::string &s,
   const std::unordered_set<std::string> *wordset,
