@@ -34,4 +34,5 @@ test_that("Bonus 2 works", {
   pt2_bonus2("unrepresentativenesses", word_set) |> expect_true()
   pt2_bonus2("abstractednesses", word_set) |> expect_false()
   pt2_bonus2("boats", word_set) |> expect_false()
+  pt2_bonus2("anticonservationist", word_set) |> expect_false()
 })

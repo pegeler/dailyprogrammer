@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iterator>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -104,15 +105,14 @@ static inline size_t get_number_of_buckets(int word_len, size_t prev_size) {
 */
 std::vector<std::string> make_all_funnel_words_any_depth(
   const std::string &s,
-  const std::unordered_set<std::string> *wordset,
-  int depth
+  const std::unordered_set<std::string> *wordset
 ) {
   int word_len = s.size() - 1;
   std::vector<std::string> final;
   auto prev = make_all_funnel_words(s);
   auto pred = [wordset](const std::string &s){return wordset->count(s) == 1;};
 
-  while (word_len > 1 && depth + word_len > 10) {
+  while (word_len > 1) {
     size_t buckets = get_number_of_buckets(--word_len, prev.size());
     std::unordered_set<std::string> curr(buckets);
     for (const auto &word : prev) {
@@ -127,12 +127,19 @@ std::vector<std::string> make_all_funnel_words_any_depth(
 
 int pt2_bonus2_loop(
     const std::string &x,
-    const std::unordered_set<std::string> *wordset,
-    int depth = 1
+    const std::unordered_set<std::string> *wordset
 ) {
-  int max_depth = depth;
-  for (const auto &word : make_all_funnel_words_any_depth(x, wordset, depth))
-    max_depth = std::max(max_depth, pt2_bonus2_loop(word, wordset, depth + 1));
+  static std::unordered_map<std::string, int> memo(wordset->size());
+
+  if (auto s = memo.find(x); s != memo.end())
+    return s->second;
+
+  int max_depth = 1;
+  for (const auto &word : make_all_funnel_words_any_depth(x, wordset))
+    max_depth = std::max(max_depth, pt2_bonus2_loop(word, wordset) + 1);
+
+  memo[x] = max_depth;
+
   return max_depth;
 }
 
