@@ -14,7 +14,7 @@ import multiprocessing as mp
 import requests
 
 
-def get_words():
+def get_words() -> set[str]:
     url = 'https://raw.githubusercontent.com/dolph/dictionary/master/enable1.txt'
     with requests.get(url) as r:
         return set(r.content.decode().splitlines(False))
@@ -24,7 +24,7 @@ WORDS = get_words()
 
 
 @cache
-def funnel2(word):
+def funnel2(word: str) -> int:
     max_depth = 1
     candidates = {word[:i] + word[(i+1):] for i in range(len(word))} & WORDS
     for candidate in candidates:
@@ -37,6 +37,28 @@ assert funnel2("princesses") == 9
 assert funnel2("turntables") == 5
 assert funnel2("implosive") == 1
 assert funnel2("programmer") == 2
+
+
+@cache
+def funnel2_chain(word: str) -> list[str]:
+    """
+    Like `funnel2`, but rather than reporting the maximum depth, it returns
+    the funneled words as a list.
+    """
+    test, keep = [], []
+    candidates = {word[:i] + word[(i+1):] for i in range(len(word))} & WORDS
+    for candidate in candidates:
+        if len(test := funnel2_chain(candidate)) > len(keep):
+            keep = test
+    return [word, *keep]
+
+
+assert len(funnel2_chain("gnash")) == 4
+assert len(funnel2_chain("princesses")) == 9
+assert len(funnel2_chain("turntables")) == 5
+assert len(funnel2_chain("implosive")) == 1
+assert len(funnel2_chain("programmer")) == 2
+
 
 # =============================================================================
 # Bonus 1
@@ -96,13 +118,24 @@ def _check(word):
 
 
 @time_it
-def run_bonus2():
+def run_bonus2_parallel():
     found = []
     words = (w for w in WORDS if len(w) > 12)
     with mp.Pool(mp.cpu_count()) as pool:
         for word in pool.imap_unordered(_check, words):
             if word is None:
                 continue
+            found.append(word)
+            if len(found) == 6:
+                return found
+
+
+@time_it
+def run_bonus2():
+    found = []
+    words = (w for w in WORDS if len(w) > 12)
+    for word in words:
+        if bonus2(word) == 12:
             found.append(word)
             if len(found) == 6:
                 return found
